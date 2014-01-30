@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="pref_autoSavePosition"
+        android:title="@string/pref_autoSavePositionTitle"
+        android:summary="@string/pref_autoSavePositionSummary"
+        android:defaultValue="false" />
+    
+    <com.cachirulop.wheredoipark.preferencesBluetoothDevicePreference
+    	android:key="bluetooth_mac"
+    	android:title="Bluetooth Device"
+    	android:dialogTitle="Choose Bluetooth Device" />
+</PreferenceScreen>

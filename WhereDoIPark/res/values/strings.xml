@@ -5,4 +5,8 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 
+    <!-- Preferences -->
+    <string name="pref_autoSavePositionTitle">Auto save position</string>
+    <string name="pref_autoSavePositionSummary">Autosave position when disconnect from a bluetooth device</string>    
+    
 </resources>
