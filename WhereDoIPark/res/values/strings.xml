@@ -3,7 +3,6 @@
 
     <string name="app_name">WhereDoIPark</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
 
     <!-- Preferences -->
     <string name="pref_AutosaveCategoryTitle">Auto save</string>

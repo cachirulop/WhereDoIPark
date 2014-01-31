@@ -1,5 +1,5 @@
 
-package com.cachirulop.wheredoipark;
+package com.cachirulop.wheredoipark.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.cachirulop.wheredoipark.activity.SettingsActivity;
+import com.cachirulop.wheredoipark.R;
+import com.cachirulop.wheredoipark.R.id;
+import com.cachirulop.wheredoipark.R.layout;
+import com.cachirulop.wheredoipark.R.menu;
 
 public class MainActivity
         extends Activity
