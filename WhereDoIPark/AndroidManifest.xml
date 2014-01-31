@@ -24,7 +24,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SettingsActivity"></activity>
+        <activity
+            android:name="com.cachirulop.wheredoipark.activity.SettingsActivity"
+            android:label="@string/action_settings"
+            android:parentActivityName="com.cachirulop.wheredoipark.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.cachirulop.wheredoipark.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

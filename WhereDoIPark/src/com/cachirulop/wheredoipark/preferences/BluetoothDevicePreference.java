@@ -1,3 +1,4 @@
+
 package com.cachirulop.wheredoipark.preferences;
 
 import java.util.Set;
@@ -5,30 +6,54 @@ import java.util.Set;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.preference.ListPreference;
+import android.preference.MultiSelectListPreference;
 import android.util.AttributeSet;
 
-public class BluetoothDevicePreference extends ListPreference {
-    
-	public BluetoothDevicePreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
+import com.cachirulop.wheredoipark.R;
 
-        BluetoothAdapter bta = BluetoothAdapter.getDefaultAdapter();
-        Set<BluetoothDevice> pairedDevices = bta.getBondedDevices();
-        CharSequence[] entries = new CharSequence[pairedDevices.size()];
-        CharSequence[] entryValues = new CharSequence[pairedDevices.size()];
-        int i = 0;
-        for (BluetoothDevice dev : pairedDevices) {
-            entries[i] = dev.getName();
-            entryValues[i] = dev.getAddress();
-            i++;
+public class BluetoothDevicePreference
+        extends MultiSelectListPreference
+{
+
+    public BluetoothDevicePreference (Context context,
+                                      AttributeSet attrs)
+    {
+        super (context,
+               attrs);
+
+        CharSequence[] entries;
+        CharSequence[] entryValues;
+        BluetoothAdapter bta;
+
+        bta = BluetoothAdapter.getDefaultAdapter ();
+        if (bta != null) {
+            Set<BluetoothDevice> pairedDevices;
+            int i;
+
+            pairedDevices = bta.getBondedDevices ();
+            entries = new CharSequence[pairedDevices.size ()];
+            entryValues = new CharSequence[pairedDevices.size ()];
+            i = 0;
+            for (BluetoothDevice dev : pairedDevices) {
+                entries [i] = dev.getName ();
+                entryValues [i] = dev.getAddress ();
+                i++;
+            }
         }
-        setEntries(entries);
-        setEntryValues(entryValues);
+        else {
+            entries = new CharSequence[1];
+            entryValues = new CharSequence[1];
+            entries [0] = context.getText (R.string.pref_BluetoothNotFound);
+            entryValues [0] = entries [0];
+        }
+
+        setEntries (entries);
+        setEntryValues (entryValues);
     }
 
-    public BluetoothDevicePreference(Context context) {
-        this(context, null);
+    public BluetoothDevicePreference (Context context)
+    {
+        this (context,
+              null);
     }
-
 }
