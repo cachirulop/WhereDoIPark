@@ -1,5 +1,5 @@
 
-package com.cachirulop.wheredoipark.preferences;
+package com.cachirulop.whereiparked.preferences;
 
 import java.util.Set;
 
@@ -9,7 +9,7 @@ import android.content.Context;
 import android.preference.MultiSelectListPreference;
 import android.util.AttributeSet;
 
-import com.cachirulop.wheredoipark.R;
+import com.cachirulop.whereiparked.R;
 
 public class BluetoothDevicePreference
         extends MultiSelectListPreference

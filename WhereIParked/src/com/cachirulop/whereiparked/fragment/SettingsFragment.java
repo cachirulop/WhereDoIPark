@@ -1,10 +1,10 @@
 
-package com.cachirulop.wheredoipark.fragment;
+package com.cachirulop.whereiparked.fragment;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-import com.cachirulop.wheredoipark.R;
+import com.cachirulop.whereiparked.R;
 
 public class SettingsFragment
         extends PreferenceFragment

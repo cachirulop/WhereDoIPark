@@ -1,10 +1,10 @@
 
-package com.cachirulop.wheredoipark.activity;
+package com.cachirulop.whereiparked.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.cachirulop.wheredoipark.fragment.SettingsFragment;
+import com.cachirulop.whereiparked.fragment.SettingsFragment;
 
 public class SettingsActivity
         extends Activity

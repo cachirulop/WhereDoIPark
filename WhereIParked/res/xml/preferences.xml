@@ -10,7 +10,7 @@
             android:summary="@string/pref_autoSavePositionSummary"
             android:title="@string/pref_autoSavePositionTitle" />
 
-        <com.cachirulop.wheredoipark.preferences.BluetoothDevicePreference
+        <com.cachirulop.whereiparked.preferences.BluetoothDevicePreference
             android:dialogTitle="@string/pref_BluetoothDeviceSummary"
             android:key="pref_bluetoothDeviceList"
             android:title="@string/pref_BluetoothDeviceTitle"
