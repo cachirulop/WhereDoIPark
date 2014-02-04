@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.cachirulop.whereiparked.R;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.UiSettings;
 
 public class MainActivity
         extends Activity
@@ -18,6 +21,16 @@ public class MainActivity
     {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_main);
+
+        initMap ();
+    }
+
+    private void initMap ()
+    {
+        GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+
+        map.setMyLocationEnabled (true);
+        map.getUiSettings ().setCompassEnabled (true);
     }
 
     @Override
