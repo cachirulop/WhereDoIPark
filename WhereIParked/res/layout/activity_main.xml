@@ -6,21 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
-    <fragment        
+    <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ImageButton
-        android:id="@+id/imageButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|left"
-        android:layout_margin="10dp"
-        android:adjustViewBounds="true"
-        android:cropToPadding="false"
-        android:src="@drawable/ic_parking_free" />
-<!--         android:background="@style/MapParkingButton" -->
-    
+    <LinearLayout
+        android:id="@+id/llMapButtons"
+        android:layout_width="match_parent"
+        android:layout_height="70dp" >
+
+        <ImageButton
+            android:id="@+id/ibMyLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false"
+            android:src="@drawable/ic_my_location" />
+
+        <ImageButton
+            android:id="@+id/ibParked"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false"
+            android:src="@drawable/ic_parking_free" />
+    </LinearLayout>
+
 </FrameLayout>
