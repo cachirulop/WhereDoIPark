@@ -16,14 +16,8 @@ import android.view.View;
 import com.cachirulop.whereiparked.R;
 import com.cachirulop.whereiparked.broadcast.BluetoothBroadcastReceiver;
 import com.cachirulop.whereiparked.common.ErrorDialogFragment;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
 
-public class MainActivity
+public class MainActivityOsmDroid
         extends Activity
 {
     BluetoothBroadcastReceiver _bluetoothReceiver;
@@ -34,7 +28,7 @@ public class MainActivity
     protected void onCreate (Bundle savedInstanceState)
     {
         super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_main_osmdroid);
+        setContentView (R.layout.activity_main);
 
         initMap ();
     }
@@ -81,6 +75,7 @@ public class MainActivity
 
     private void initMap ()
     {
+/*        
         if (servicesConnected ()) {
             GoogleMap map;
 
@@ -93,6 +88,7 @@ public class MainActivity
                 moveToCurrentLocation ();
             }
         }
+*/
     }
 
     @Override
@@ -119,6 +115,7 @@ public class MainActivity
 
     private void moveToCurrentLocation ()
     {
+/*        
         Location currentLocation;
         LatLng currentLatLng;
         GoogleMap map;
@@ -136,13 +133,16 @@ public class MainActivity
 
             }
         }
+*/
     }
 
+    /*
     private GoogleMap getMap ()
     {
         return ((MapFragment) getFragmentManager ().findFragmentById (R.id.map)).getMap ();
     }
-
+    */
+    
     private void showPreferences ()
     {
         startActivity (new Intent (this,
@@ -156,6 +156,7 @@ public class MainActivity
 
     private boolean servicesConnected ()
     {
+/*        
         // Check that Google Play services is available
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable (this);
 
@@ -190,6 +191,8 @@ public class MainActivity
 
             return false;
         }
+*/
+        return false;
     }
 
 }

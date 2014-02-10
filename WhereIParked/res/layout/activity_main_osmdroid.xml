@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flMainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tilesource="Mapnik"
+        />
+
+    <RelativeLayout
+        android:id="@+id/lMapButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="true"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+
+        <ImageButton
+            android:id="@+id/ibMyLocation"
+            style="@android:style/Widget.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false"
+            android:onClick="setMyLocation"
+            android:src="@drawable/ic_my_location" />
+        
+        <ImageButton
+            android:id="@+id/ibParked"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false"
+            android:src="@drawable/ic_parking_free" />
+
+        <!--    style="?android:attr/buttonStyleInset"   -->
+        <ImageButton
+            android:id="@+id/ibCarLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/ibMyLocation"
+            android:layout_toLeftOf="@+id/ibMyLocation"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false"
+            android:src="@drawable/ic_car_location"
+            style="@android:style/Widget.Button" />
+
+        <TextView
+            android:id="@+id/tvTimeParked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/ibParked"
+            style="@style/ViewInset"
+            android:text="00 00:00:00"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/primary_text_light" />
+
+    </RelativeLayout>
+
+</FrameLayout>
