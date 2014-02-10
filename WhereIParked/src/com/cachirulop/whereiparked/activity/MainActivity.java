@@ -1,3 +1,4 @@
+
 package com.cachirulop.whereiparked.activity;
 
 import android.app.Activity;
@@ -8,71 +9,98 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.cachirulop.whereiparked.R;
+import com.cachirulop.whereiparked.common.Message;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-public class MainActivity extends Activity {
+public class MainActivity
+        extends Activity
+{
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+    @Override
+    protected void onCreate (Bundle savedInstanceState)
+    {
+        super.onCreate (savedInstanceState);
+        setContentView (R.layout.activity_main);
 
-		initMap();
-	}
+        initMap ();
+    }
 
-	private void initMap() {
-		GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(
-				R.id.map)).getMap();
+    private void initMap ()
+    {
+        GoogleMap map;
 
-		if (map != null) {
-			Location currentLocation;
-			LatLng currentLatLng;
+        map = getMap ();
+        if (map != null) {
+            map.setMyLocationEnabled (true);
+            map.getUiSettings ().setCompassEnabled (false);
+            map.getUiSettings ().setMyLocationButtonEnabled (false);
 
-			map.setMyLocationEnabled(true);
-			map.getUiSettings().setCompassEnabled(false);
-			map.getUiSettings().setMyLocationButtonEnabled(false);
+            moveToCurrentLocation ();
+        }
+    }
 
-			currentLocation = map.getMyLocation();
-			if (currentLocation != null) {
-				currentLatLng = new LatLng(currentLocation.getLatitude(),
-						currentLocation.getLongitude());
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater ().inflate (R.menu.main,
+                                    menu);
+        return true;
+    }
 
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,
-						13));
-			}
-		} else {
-			ImageButton img;
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        switch (item.getItemId ()) {
+            case R.id.action_settings:
+                showPreferences ();
+                return true;
 
-			img = (ImageButton) findViewById(R.id.ibParked);
-			img.setVisibility(View.INVISIBLE);
-		}
-	}
+            default:
+                return super.onOptionsItemSelected (item);
+        }
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+    private void moveToCurrentLocation ()
+    {
+        Location currentLocation;
+        LatLng currentLatLng;
+        GoogleMap map;
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_settings:
-			showPreferences();
-			return true;
+        map = getMap ();
+        if (map != null) {
+            currentLocation = map.getMyLocation ();
+            if (currentLocation != null) {
+                currentLatLng = new LatLng (currentLocation.getLatitude (),
+                                            currentLocation.getLongitude ());
 
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
+                map.animateCamera (CameraUpdateFactory.newLatLngZoom (currentLatLng,
+                                                                   13));
+                // map.animateCamera(CameraUpdateFactory.zoomIn());
 
-	private void showPreferences() {
-		startActivity(new Intent(this, SettingsActivity.class));
-	}
+            }
+        }
+    }
+
+    private GoogleMap getMap ()
+    {
+        return ((MapFragment) getFragmentManager ().findFragmentById (R.id.map)).getMap ();
+    }
+
+    private void showPreferences ()
+    {
+        startActivity (new Intent (this,
+                                   SettingsActivity.class));
+    }
+
+    public void setMyLocation (View v)
+    {
+        moveToCurrentLocation ();
+    }
 }
