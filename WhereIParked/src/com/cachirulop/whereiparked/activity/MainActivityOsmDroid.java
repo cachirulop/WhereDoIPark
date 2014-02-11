@@ -143,7 +143,7 @@ public class MainActivityOsmDroid
 
         controller.animateTo (currentLocation);
         controller.setCenter (currentLocation);
-        controller.setZoom (50);
+        controller.setZoom (21);
     }
 
     private MapView getMap ()
