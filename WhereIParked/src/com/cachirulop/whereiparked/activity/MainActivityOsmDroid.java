@@ -1,26 +1,30 @@
 
 package com.cachirulop.whereiparked.activity;
 
+import org.osmdroid.api.IMapController;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
 import android.app.Activity;
-import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.cachirulop.whereiparked.R;
 import com.cachirulop.whereiparked.broadcast.BluetoothBroadcastReceiver;
-import com.cachirulop.whereiparked.common.ErrorDialogFragment;
 
 public class MainActivityOsmDroid
         extends Activity
 {
     BluetoothBroadcastReceiver _bluetoothReceiver;
+    MyLocationNewOverlay       _locationOverlay;
 
     private final static int   CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -28,7 +32,7 @@ public class MainActivityOsmDroid
     protected void onCreate (Bundle savedInstanceState)
     {
         super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_main);
+        setContentView (R.layout.activity_main_osmdroid);
 
         initMap ();
     }
@@ -75,20 +79,36 @@ public class MainActivityOsmDroid
 
     private void initMap ()
     {
-/*        
-        if (servicesConnected ()) {
-            GoogleMap map;
+        MapView view;
+        ScaleBarOverlay scaleOverlay;
 
-            map = getMap ();
-            if (map != null) {
-                map.setMyLocationEnabled (true);
-                map.getUiSettings ().setCompassEnabled (false);
-                map.getUiSettings ().setMyLocationButtonEnabled (false);
+        view = getMap ();
+        _locationOverlay = new MyLocationNewOverlay (this,
+                                                     new GpsMyLocationProvider (this),
+                                                     view);
+        scaleOverlay = new ScaleBarOverlay (this);
+        scaleOverlay.setCentred (true);
+        scaleOverlay.setScaleBarOffset (getResources ().getDisplayMetrics ().widthPixels / 2,
+                                        10);
 
-                moveToCurrentLocation ();
+        // _locationOverlay.disableMyLocation (); // not on by default
+        // _locationOverlay.disableFollowLocation ();
+        _locationOverlay.setDrawAccuracyEnabled (true);
+        _locationOverlay.runOnFirstFix (new Runnable ()
+        {
+            public void run ()
+            {
+                getMap ().getController ().animateTo (_locationOverlay.getMyLocation ());
             }
-        }
-*/
+        });
+
+        view.setBuiltInZoomControls (true);
+        view.setMultiTouchControls (true);
+
+        view.getOverlays ().add (_locationOverlay);
+        view.getOverlays ().add (scaleOverlay);
+
+        _locationOverlay.enableMyLocation ();
     }
 
     @Override
@@ -115,34 +135,22 @@ public class MainActivityOsmDroid
 
     private void moveToCurrentLocation ()
     {
-/*        
-        Location currentLocation;
-        LatLng currentLatLng;
-        GoogleMap map;
+        IMapController controller;
+        GeoPoint currentLocation;
 
-        map = getMap ();
-        if (map != null) {
-            currentLocation = map.getMyLocation ();
-            if (currentLocation != null) {
-                currentLatLng = new LatLng (currentLocation.getLatitude (),
-                                            currentLocation.getLongitude ());
+        controller = getMap ().getController ();
+        currentLocation = _locationOverlay.getMyLocation ();
 
-                map.animateCamera (CameraUpdateFactory.newLatLngZoom (currentLatLng,
-                                                                      13));
-                // map.animateCamera(CameraUpdateFactory.zoomIn());
-
-            }
-        }
-*/
+        controller.animateTo (currentLocation);
+        controller.setCenter (currentLocation);
+        controller.setZoom (50);
     }
 
-    /*
-    private GoogleMap getMap ()
+    private MapView getMap ()
     {
-        return ((MapFragment) getFragmentManager ().findFragmentById (R.id.map)).getMap ();
+        return (MapView) findViewById (R.id.mapview);
     }
-    */
-    
+
     private void showPreferences ()
     {
         startActivity (new Intent (this,
@@ -156,42 +164,34 @@ public class MainActivityOsmDroid
 
     private boolean servicesConnected ()
     {
-/*        
-        // Check that Google Play services is available
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable (this);
-
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d ("Location Updates",
-                   "Google Play services is available.");
-
-            // Continue
-            return true;
-        }
-        else {
-            // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog (resultCode,
-                                                                        this,
-                                                                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
-            // If Google Play services can provide an error dialog
-            if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment = new ErrorDialogFragment ();
-
-                // Set the dialog in the DialogFragment
-                errorFragment.setDialog (errorDialog);
-
-                // Show the error dialog in the DialogFragment
-                errorFragment.show (getFragmentManager (),
-                                    "Location Updates");
-
-            }
-
-            return false;
-        }
-*/
+        /*
+         * // Check that Google Play services is available int resultCode =
+         * GooglePlayServicesUtil.isGooglePlayServicesAvailable (this);
+         * 
+         * // If Google Play services is available if (ConnectionResult.SUCCESS
+         * == resultCode) { // In debug mode, log the status Log.d
+         * ("Location Updates", "Google Play services is available.");
+         * 
+         * // Continue return true; } else { // Get the error dialog from Google
+         * Play services Dialog errorDialog =
+         * GooglePlayServicesUtil.getErrorDialog (resultCode, this,
+         * CONNECTION_FAILURE_RESOLUTION_REQUEST);
+         * 
+         * // If Google Play services can provide an error dialog if
+         * (errorDialog != null) { // Create a new DialogFragment for the error
+         * dialog ErrorDialogFragment errorFragment = new ErrorDialogFragment
+         * ();
+         * 
+         * // Set the dialog in the DialogFragment errorFragment.setDialog
+         * (errorDialog);
+         * 
+         * // Show the error dialog in the DialogFragment errorFragment.show
+         * (getFragmentManager (), "Location Updates");
+         * 
+         * }
+         * 
+         * return false; }
+         */
         return false;
     }
 

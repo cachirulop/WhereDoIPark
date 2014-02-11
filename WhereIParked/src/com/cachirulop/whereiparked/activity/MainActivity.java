@@ -34,7 +34,7 @@ public class MainActivity
     protected void onCreate (Bundle savedInstanceState)
     {
         super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_main_osmdroid);
+        setContentView (R.layout.activity_main);
 
         initMap ();
     }
