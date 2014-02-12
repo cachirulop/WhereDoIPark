@@ -8,14 +8,18 @@ import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.RelativeLayout;
 
 import com.cachirulop.whereiparked.R;
 import com.cachirulop.whereiparked.broadcast.BluetoothBroadcastReceiver;
@@ -79,37 +83,70 @@ public class MainActivityOsmDroid
 
     private void initMap ()
     {
-        MapView view;
-        ScaleBarOverlay scaleOverlay;
+        RelativeLayout buttons;
 
-        view = getMap ();
-        _locationOverlay = new MyLocationNewOverlay (this,
-                                                     new GpsMyLocationProvider (this),
-                                                     view);
-        scaleOverlay = new ScaleBarOverlay (this);
-        scaleOverlay.setCentred (true);
-        scaleOverlay.setScaleBarOffset (getResources ().getDisplayMetrics ().widthPixels / 2,
-                                        10);
-
-        // _locationOverlay.disableMyLocation (); // not on by default
-        // _locationOverlay.disableFollowLocation ();
-        _locationOverlay.setDrawAccuracyEnabled (true);
-        _locationOverlay.runOnFirstFix (new Runnable ()
+        buttons = (RelativeLayout) findViewById (R.id.lMapButtons);
+        
+        // Initialize the map when the relative layout is constructed to put the scale above the buttons
+        buttons.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener()
         {
-            public void run ()
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            private void unregister(RelativeLayout buttons)
             {
-                getMap ().getController ().animateTo (_locationOverlay.getMyLocation ());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    buttons.getViewTreeObserver().removeOnGlobalLayoutListener (this);
+                }
+                else {
+                    buttons.getViewTreeObserver().removeGlobalOnLayoutListener (this);
+                }
             }
-        });
+            
+            
+            @Override
+            public void onGlobalLayout()
+            {
+                RelativeLayout buttons;
+                ScaleBarOverlay scaleOverlay;
+                MapView view;
 
-        view.setBuiltInZoomControls (true);
-        view.setMultiTouchControls (true);
+                view = getMap ();
+                buttons = (RelativeLayout) findViewById (R.id.lMapButtons);
 
-        view.getOverlays ().add (_locationOverlay);
-        view.getOverlays ().add (scaleOverlay);
+                _locationOverlay = new MyLocationNewOverlay (getApplicationContext (),
+                                                             new GpsMyLocationProvider (getApplicationContext()),
+                                                             view);
 
-        _locationOverlay.enableMyLocation ();
-    }
+                unregister(buttons);
+                                
+                scaleOverlay = new ScaleBarOverlay (getApplicationContext ());
+                scaleOverlay.setCentred (false);
+                scaleOverlay.drawLongitudeScale (true);
+                
+                scaleOverlay.setScaleBarOffset (10,
+                                                buttons.getTop () +  buttons.getHeight () + 100);
+                
+                _locationOverlay.enableMyLocation ();
+                _locationOverlay.enableFollowLocation ();
+                
+                _locationOverlay.setDrawAccuracyEnabled (true);
+                _locationOverlay.runOnFirstFix (new Runnable ()
+                {
+                    public void run ()
+                    {
+                        getMap ().getController ().animateTo (_locationOverlay.getMyLocation ());
+                    }
+                });
+
+                view.setBuiltInZoomControls (true);
+                view.setMultiTouchControls (true);
+
+                view.getOverlays ().add (scaleOverlay);
+                view.getOverlays ().add (_locationOverlay);
+
+                _locationOverlay.enableMyLocation ();
+            }
+        });        
+   }
 
     @Override
     public boolean onCreateOptionsMenu (Menu menu)
