@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="16"
         android:targetSdkVersion="19" />
     
     
@@ -13,8 +13,7 @@
     <!-- List of bluetooth devices to autosave position -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
-    <!-- Maps -->
-    <!-- 
+    <!-- Google Maps -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -24,16 +23,17 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true"/>
-     -->
     
     <!-- osmdroid -->
+    <!-- 
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> 
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    
+     -->
+	
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -45,10 +45,10 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDp1TWspZRAyIgtHpf6uzGkKn_l-RnpZXo" />
+            android:value="AIzaSyC3HqYG40WPYnxcXF_76NXl6Ti9I6IHbqw" />
 
         <activity
-            android:name="com.cachirulop.whereiparked.activity.MainActivityOsmDroid"
+            android:name="com.cachirulop.whereiparked.activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,10 +59,10 @@
         <activity
             android:name="com.cachirulop.whereiparked.activity.SettingsActivity"
             android:label="@string/action_settings"
-            android:parentActivityName="com.cachirulop.whereiparked.activity.MainActivityOsmDroid" >
+            android:parentActivityName="com.cachirulop.whereiparked.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.cachirulop.whereiparked.MainActivityOsmDroid" />
+                android:value="com.cachirulop.whereiparked.MainActivity" />
         </activity>
     </application>
 

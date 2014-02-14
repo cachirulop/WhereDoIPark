@@ -16,12 +16,14 @@ import android.view.View;
 import com.cachirulop.whereiparked.R;
 import com.cachirulop.whereiparked.broadcast.BluetoothBroadcastReceiver;
 import com.cachirulop.whereiparked.common.ErrorDialogFragment;
+import com.cachirulop.whereiparked.providers.MapForgeTileProvider;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 
 public class MainActivity
         extends Activity
@@ -86,11 +88,17 @@ public class MainActivity
 
             map = getMap ();
             if (map != null) {
-                map.setMyLocationEnabled (true);
+                //map.setMyLocationEnabled (true);
                 map.getUiSettings ().setCompassEnabled (false);
                 map.getUiSettings ().setMyLocationButtonEnabled (false);
 
-                moveToCurrentLocation ();
+                //moveToCurrentLocation ();
+                
+                // TODO: Only when not connection available
+                /*
+                map.setMapType(GoogleMap.MAP_TYPE_NONE);
+                map.addTileOverlay(new TileOverlayOptions().tileProvider(new MapForgeTileProvider()));
+                */
             }
         }
     }
