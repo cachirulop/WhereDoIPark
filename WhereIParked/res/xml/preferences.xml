@@ -3,7 +3,7 @@
 
     <PreferenceCategory
         android:key="pref_AutoSaveCategory"
-        android:title="@string/pref_AutosaveCategoryTitle" >
+        android:title="@string/pref_autosaveCategoryTitle" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_autoSavePosition"
@@ -11,10 +11,20 @@
             android:title="@string/pref_autoSavePositionTitle" />
 
         <com.cachirulop.whereiparked.preferences.BluetoothDevicePreference
-            android:dialogTitle="@string/pref_BluetoothDeviceSummary"
+            android:dialogTitle="@string/pref_bluetoothDeviceSummary"
             android:key="pref_bluetoothDeviceList"
-            android:title="@string/pref_BluetoothDeviceTitle"
+            android:title="@string/pref_bluetoothDeviceTitle"
             android:dependency="pref_autoSavePosition"/>
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="pref_mapFilesPath"
+        android:title="@string/pref_mapFilesPathCategoryTitle" >
+		<EditTextPreference
+            android:defaultValue="/sdcard/maps"
+            android:key="pref_mapFilesPath"
+            android:summary="@string/pref_mapFilesPathSummary"
+            android:title="@string/pref_mapFilesPathTitle" />
+    </PreferenceCategory>
+    
 </PreferenceScreen>
