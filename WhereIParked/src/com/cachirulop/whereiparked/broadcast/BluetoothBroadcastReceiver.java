@@ -1,7 +1,6 @@
 
 package com.cachirulop.whereiparked.broadcast;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,14 +22,12 @@ public class BluetoothBroadcastReceiver
         action = intent.getAction ();
         device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
 
-        Message.showMessage (context,
-                             "Bluetooth broadcast receive: action: " + action +
+        Message.showMessage ("Bluetooth broadcast receive: action: " + action +
                                      ", device: " + device.getAddress () +
                                      " - " + device.getName ());
 
         if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals (action)) {
-            Message.showMessage (context,
-                                 "Device disconnected");
+            Message.showMessage ("Device disconnected");
         }
     }
 

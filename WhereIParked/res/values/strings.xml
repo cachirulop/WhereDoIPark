@@ -5,12 +5,17 @@
     <string name="action_settings">Settings</string>
 
     <!-- Preferences -->
-    <string name="pref_AutosaveCategoryTitle">Auto save</string>
+    <string name="pref_autosaveCategoryTitle">Auto save</string>
     <string name="pref_autoSavePositionTitle">Auto save position</string>
     <string name="pref_autoSavePositionSummary">Autosave position when disconnect from a bluetooth device</string>
-    <string name="pref_BluetoothDeviceTitle">Bluetooth devices</string>    
-    <string name="pref_BluetoothDeviceSummary">Bluetooth paired devices</string>    
+    <string name="pref_bluetoothDeviceTitle">Bluetooth devices</string>    
+    <string name="pref_bluetoothDeviceSummary">Bluetooth paired devices</string>
     
-    <string name="pref_BluetoothNotFound">Bluetooth adapter not found</string>
+    <string name="pref_mapFilesPathCategoryTitle">Map files directory</string>
+    <string name="pref_mapFilesPathTitle">Bluetooth devices</string>    
+    <string name="pref_mapFilesPathSummary">Bluetooth paired devices</string>
+    
+    
+    <string name="pref_bluetoothNotFound">Bluetooth adapter not found</string>
 
 </resources>

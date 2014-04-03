@@ -48,7 +48,7 @@ public class BluetoothDevicePreference
         else {
             entries = new CharSequence[1];
             entryValues = new CharSequence[1];
-            entries [0] = context.getText (R.string.pref_BluetoothNotFound);
+            entries [0] = context.getText (R.string.pref_bluetoothNotFound);
             entryValues [0] = entries [0];
         }
 
