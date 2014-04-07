@@ -1,4 +1,3 @@
-
 package com.cachirulop.whereiparked.manager;
 
 import java.io.File;
@@ -81,6 +80,5 @@ public class MapFilesManager
      */
     private static void deleteFiles ()
     {
-
     }
 }
