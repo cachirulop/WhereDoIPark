@@ -32,7 +32,7 @@
             android:cropToPadding="false"
             android:onClick="setMyLocation"
             android:src="@drawable/ic_my_location" />
-        
+
         <ImageButton
             android:id="@+id/ibParked"
             style="?android:attr/borderlessButtonStyle"
@@ -44,29 +44,53 @@
             android:cropToPadding="false"
             android:src="@drawable/ic_parking_free" />
 
-        <!--    style="?android:attr/buttonStyleInset"   -->
+        <!-- style="?android:attr/buttonStyleInset" -->
+
         <ImageButton
             android:id="@+id/ibCarLocation"
+            style="@android:style/Widget.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/ibMyLocation"
             android:layout_toLeftOf="@+id/ibMyLocation"
             android:adjustViewBounds="true"
             android:cropToPadding="false"
-            android:src="@drawable/ic_car_location"
-            style="@android:style/Widget.Button" />
+            android:src="@drawable/ic_car_location" />
 
         <TextView
             android:id="@+id/tvTimeParked"
+            style="@style/ViewInset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/ibParked"
-            style="@style/ViewInset"
             android:text="00 00:00:00"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/primary_text_light" />
-
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llProgressUpdating"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading offline maps" />
+
+        <ProgressBar
+            android:id="@+id/pbUpdatingOflineMaps"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:progress="20" />
+
+    </LinearLayout>
 
 </FrameLayout>
