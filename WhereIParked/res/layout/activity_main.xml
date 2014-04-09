@@ -69,28 +69,4 @@
             android:textColor="@android:color/primary_text_light" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/llProgressUpdating"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Loading offline maps" />
-
-        <ProgressBar
-            android:id="@+id/pbUpdatingOflineMaps"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:progress="20" />
-
-    </LinearLayout>
-
 </FrameLayout>

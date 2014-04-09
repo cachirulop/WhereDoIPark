@@ -3,11 +3,13 @@ package com.cachirulop.whereiparked.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +19,8 @@ import com.cachirulop.whereiparked.R;
 import com.cachirulop.whereiparked.broadcast.BluetoothBroadcastReceiver;
 import com.cachirulop.whereiparked.common.ErrorDialogFragment;
 import com.cachirulop.whereiparked.manager.ContextManager;
+import com.cachirulop.whereiparked.manager.MapFilesManager;
+import com.cachirulop.whereiparked.manager.ProgressDialogListener;
 import com.cachirulop.whereiparked.providers.MapForgeTileProvider;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -37,9 +41,9 @@ public class MainActivity
     protected void onCreate (Bundle savedInstanceState)
     {
         super.onCreate (savedInstanceState);
-        
+
         ContextManager.initContext (this);
-        
+
         setContentView (R.layout.activity_main);
 
         initMap ();
@@ -96,11 +100,11 @@ public class MainActivity
                 map.getUiSettings ().setCompassEnabled (false);
                 map.getUiSettings ().setMyLocationButtonEnabled (false);
 
-                //moveToCurrentLocation ();
-                
+                // moveToCurrentLocation ();
+
                 // TODO: Only when not connection available
-                map.setMapType(GoogleMap.MAP_TYPE_NONE);
-                map.addTileOverlay(new TileOverlayOptions().tileProvider(new MapForgeTileProvider()));
+                map.setMapType (GoogleMap.MAP_TYPE_NONE);
+                map.addTileOverlay (new TileOverlayOptions ().tileProvider (new MapForgeTileProvider ()));
             }
         }
     }
@@ -162,6 +166,7 @@ public class MainActivity
     public void setMyLocation (View v)
     {
         moveToCurrentLocation ();
+        launchBarDialog (v);
     }
 
     private boolean servicesConnected ()
@@ -202,4 +207,54 @@ public class MainActivity
         }
     }
 
+    public void launchBarDialog (View view)
+    {
+        final ProgressDialog barProgressDialog;
+        final Handler updateBarHandler;
+        ProgressDialogListener listener;
+
+        updateBarHandler = new Handler ();
+        barProgressDialog = new ProgressDialog (MainActivity.this);
+
+        barProgressDialog.setTitle ("Downloading Image ...");
+        barProgressDialog.setMessage ("Download in progress ...");
+        barProgressDialog.setProgressStyle (barProgressDialog.STYLE_HORIZONTAL);
+        barProgressDialog.setProgress (0);
+        barProgressDialog.setMax (20);
+        barProgressDialog.show ();
+        barProgressDialog.setCancelable (false);
+        
+        listener = new ProgressDialogListener (barProgressDialog);
+        MapFilesManager.updateMapDatabase (listener);
+        
+/*
+        new Thread (new Runnable ()
+        {
+            @Override
+            public void run ()
+            {
+                try {
+                    // Here you should write your time consuming task...
+                    while (barProgressDialog.getProgress () <= barProgressDialog.getMax ()) {
+                        Thread.sleep (2000);
+
+                        updateBarHandler.post (new Runnable ()
+                        {
+                            public void run ()
+                            {
+                                barProgressDialog.incrementProgressBy (2);
+                            }
+                        });
+
+                        if (barProgressDialog.getProgress () == barProgressDialog.getMax ()) {
+                            barProgressDialog.dismiss ();
+                        }
+                    }
+                }
+                catch (Exception e) {
+                }
+            }
+        }).start ();
+*/
+    }
 }

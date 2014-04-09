@@ -26,13 +26,25 @@ public class MapFilesManager
      * 
      * Afterwards delete of the database the non existent files on the local
      * storage.
+     * 
+     * The work is done in a new thread.
      */
-    public static void updateMapDatabase ()
+    public static void updateMapDatabase (final IProgressListener listener)
     {
-        updateFiles ();
-        deleteFiles ();
+        Thread th;
+        
+        th = new Thread (new Runnable () {
+            @Override
+            public void run ()
+            {
+                updateFiles (listener);
+                cleanFiles ();
+            }
+        });
+        
+        th.start ();
     }
-
+    
     /**
      * Update the database with the content of the path in the local storage.
      * 
@@ -42,9 +54,11 @@ public class MapFilesManager
      * exist insert new record in the table.
      * 
      */
-    private static void updateFiles ()
+    private static void updateFiles (IProgressListener listener)
     {
         File directory;
+        
+        listener.setMessage ("Updating files");
 
         directory = new File (SettingsManager.getMapFilesPath ());
         if (!directory.exists ()) {
@@ -57,7 +71,12 @@ public class MapFilesManager
             File[] dirContent;
 
             dirContent = directory.listFiles ();
+            
+            listener.reset ();
+            listener.setMax (dirContent.length);
+            
             for (File f : dirContent) {
+                listener.increment ();
                 processFile (f);
             }
         }
@@ -69,12 +88,19 @@ public class MapFilesManager
      * Read the list of files in the database table and remove those that
      * doesn't exist in the local storage.
      */
-    private static void deleteFiles ()
+    private static void cleanFiles ()
     {
         ArrayList<MapFile> lstFiles;
         
         lstFiles = getAllMapFiles ();
-        
+        for (MapFile f : lstFiles) {
+            File localFile;
+            
+            localFile = new File (f.getFileName ());
+            if (!localFile.exists ()) {
+                deleteMapFile (f);
+            }
+        }        
     }
 
     /**
@@ -150,7 +176,7 @@ public class MapFilesManager
     /**
      * Returns all the map files of the database
      * 
-     * @return List of objects of the Movement class
+     * @return List of objects of the MapFile class
      */
     public static ArrayList<MapFile> getAllMapFiles ()
     {
