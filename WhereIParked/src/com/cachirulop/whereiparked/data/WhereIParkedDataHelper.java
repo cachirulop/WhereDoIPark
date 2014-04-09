@@ -19,6 +19,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.cachirulop.whereiparked.R;
+import com.cachirulop.whereiparked.manager.ContextManager;
 
 /**
  * Provides the methods to access to the database.
@@ -40,19 +41,15 @@ public class WhereIParkedDataHelper
 
     /**
      * Constructor that receives the context.
-     * 
-     * @param ctx
-     *            Context where the database object is created. Is used to get
-     *            the references to the resources.
      */
-    public WhereIParkedDataHelper (Context ctx)
+    public WhereIParkedDataHelper ()
     {
-        super (ctx,
+        super (ContextManager.getContext (),
                DATABASE_NAME,
                null,
                DATABASE_VERSION);
 
-        _ctx = ctx;
+        _ctx = ContextManager.getContext ();
     }
 
     /**

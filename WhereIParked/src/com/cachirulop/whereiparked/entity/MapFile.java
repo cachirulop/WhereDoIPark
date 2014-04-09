@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class MapFile
 {
-    private int    _idMapFile;
+    private long   _idMapFile;
     private String _fileName;
     private Date   _creationDate;
     private int    _boundsEast;
@@ -14,12 +14,12 @@ public class MapFile
     private int    _boundsSouth;
     private int    _startZoom;
 
-    public int getIdMapFile ()
+    public long getIdMapFile ()
     {
         return _idMapFile;
     }
 
-    public void setIdMapFile (int idMapFile)
+    public void setIdMapFile (long idMapFile)
     {
         this._idMapFile = idMapFile;
     }
@@ -38,7 +38,7 @@ public class MapFile
     {
         return _creationDate;
     }
-
+    
     public void setCreationDate (Date creationDate)
     {
         this._creationDate = creationDate;
