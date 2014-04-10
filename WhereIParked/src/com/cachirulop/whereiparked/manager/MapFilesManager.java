@@ -8,8 +8,10 @@ import java.util.Date;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 
 import com.cachirulop.whereiparked.common.Message;
+import com.cachirulop.whereiparked.common.exception.ConfigurationException;
 import com.cachirulop.whereiparked.data.WhereIParkedDataHelper;
 import com.cachirulop.whereiparked.entity.MapFile;
 
@@ -32,19 +34,34 @@ public class MapFilesManager
     public static void updateMapDatabase (final IProgressListener listener)
     {
         Thread th;
-        
-        th = new Thread (new Runnable () {
+        final Handler h;
+
+        h = new Handler ();
+
+        th = new Thread (new Runnable ()
+        {
             @Override
             public void run ()
             {
-                updateFiles (listener);
-                cleanFiles ();
+                try {
+                    updateFiles (listener);
+                    cleanFiles ();
+                }
+                catch (final ConfigurationException e) {
+                    h.post (new Runnable ()
+                    {
+                        public void run ()
+                        {
+                            Message.showMessage (e.getMessage ());
+                        }
+                    });
+                }
             }
         });
-        
+
         th.start ();
     }
-    
+
     /**
      * Update the database with the content of the path in the local storage.
      * 
@@ -55,26 +72,27 @@ public class MapFilesManager
      * 
      */
     private static void updateFiles (IProgressListener listener)
+        throws ConfigurationException
     {
         File directory;
-        
+
         listener.setMessage ("Updating files");
 
         directory = new File (SettingsManager.getMapFilesPath ());
         if (!directory.exists ()) {
-            Message.showMessage ("Directory not found");
+            throw new ConfigurationException ("Directory not found");
         }
         else if (!directory.canRead ()) {
-            Message.showMessage ("Directory can't read");
+            throw new ConfigurationException ("Directory not readable");
         }
         else {
             File[] dirContent;
 
             dirContent = directory.listFiles ();
-            
+
             listener.reset ();
             listener.setMax (dirContent.length);
-            
+
             for (File f : dirContent) {
                 listener.increment ();
                 processFile (f);
@@ -91,16 +109,16 @@ public class MapFilesManager
     private static void cleanFiles ()
     {
         ArrayList<MapFile> lstFiles;
-        
+
         lstFiles = getAllMapFiles ();
         for (MapFile f : lstFiles) {
             File localFile;
-            
+
             localFile = new File (f.getFileName ());
             if (!localFile.exists ()) {
                 deleteMapFile (f);
             }
-        }        
+        }
     }
 
     /**
@@ -172,7 +190,7 @@ public class MapFilesManager
             }
         }
     }
-    
+
     /**
      * Returns all the map files of the database
      * 
@@ -205,7 +223,7 @@ public class MapFilesManager
                 db.close ();
             }
         }
-    }    
+    }
 
     /**
      * Insert new map file data into the table map_files in the database
@@ -256,7 +274,7 @@ public class MapFilesManager
             }
         }
     }
-    
+
     /**
      * Delete a map file data from the database
      * 
@@ -280,7 +298,7 @@ public class MapFilesManager
             }
         }
     }
-    
+
     /**
      * Gets the maximum identifier of the map files table
      * 
@@ -315,7 +333,7 @@ public class MapFilesManager
 
         return result;
     }
-    
+
     /**
      * Create a new object of the MapFile class from a row of the database
      * filled in the cursor.
