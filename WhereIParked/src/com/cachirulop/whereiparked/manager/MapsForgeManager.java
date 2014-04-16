@@ -13,6 +13,7 @@ import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
+import com.cachirulop.whereiparked.common.exception.MapsForgeException;
 import com.cachirulop.whereiparked.entity.MapFile;
 
 public class MapsForgeManager
@@ -66,14 +67,17 @@ public class MapsForgeManager
      * @return New MapFile object with the map data of the file
      */
     public MapFile getMapFile (String path)
+        throws MapsForgeException
     {
         MapFile result = null;
         FileOpenResult fileOpenResult;
         File f;
 
-        f = new File ("/storage/emulated/legacy/maps/spain.map");
+        f = new File (path);
+
         _mapDatabase.closeFile ();
         fileOpenResult = _mapDatabase.openFile (f);
+
         if (fileOpenResult.isSuccess ()) {
             MapFileInfo info;
 
@@ -81,7 +85,7 @@ public class MapsForgeManager
 
             result = new MapFile ();
             result.setFileName (f.getAbsolutePath ());
-            result.setCreationDate (new Date(f.lastModified ()));
+            result.setCreationDate (new Date (f.lastModified ()));
             result.setBoundsNorth (MapsForgeManager.lat2YTile (info.boundingBox.getMaxLatitude (),
                                                                info.startZoomLevel));
             result.setBoundsSouth (MapsForgeManager.lat2YTile (info.boundingBox.getMinLatitude (),
@@ -91,6 +95,9 @@ public class MapsForgeManager
             result.setBoundsWest (MapsForgeManager.lon2XTile (info.boundingBox.getMinLongitude (),
                                                               info.startZoomLevel));
             result.setStartZoom (info.startZoomLevel);
+        }
+        else {
+            throw new MapsForgeException (fileOpenResult.getErrorMessage ());
         }
 
         return result;

@@ -9,34 +9,37 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
+import android.util.Log;
 
+import com.cachirulop.whereiparked.R;
 import com.cachirulop.whereiparked.common.Message;
+import com.cachirulop.whereiparked.common.MessageHandler;
 import com.cachirulop.whereiparked.common.exception.ConfigurationException;
+import com.cachirulop.whereiparked.common.exception.WhereIParkedException;
 import com.cachirulop.whereiparked.data.WhereIParkedDataHelper;
 import com.cachirulop.whereiparked.entity.MapFile;
 
 public class MapFilesManager
 {
+    private static final String CONST_MAP_FILES_TABLE_NAME = "map_files";
+    
     /**
      * Update the map database.
      * 
      * Synchronize the map files in then local storage with the data in the
      * database.
      * 
-     * First read the new files of the local storage and add or update the of
-     * them.
-     * 
-     * Afterwards delete of the database the non existent files on the local
-     * storage.
+     * Delete all the files in the database and then read the content of the
+     * configured directory an save the data of the local files in the database.
      * 
      * The work is done in a new thread.
      */
     public static void updateMapDatabase (final IProgressListener listener)
     {
         Thread th;
-        final Handler h;
+        final MessageHandler h;
 
-        h = new Handler ();
+        h = new MessageHandler ();
 
         th = new Thread (new Runnable ()
         {
@@ -44,17 +47,16 @@ public class MapFilesManager
             public void run ()
             {
                 try {
-                    updateFiles (listener);
-                    cleanFiles ();
+                    deleteAllDatabaseMapFiles ();
+                    readFilesToDatabase (listener,
+                                         h);
+
+                    listener.dismiss ();
                 }
-                catch (final ConfigurationException e) {
-                    h.post (new Runnable ()
-                    {
-                        public void run ()
-                        {
-                            Message.showMessage (e.getMessage ());
-                        }
-                    });
+                catch (final Exception e) {
+                    listener.dismiss ();
+
+                    h.postMessage (e.getMessage ());
                 }
             }
         });
@@ -63,91 +65,108 @@ public class MapFilesManager
     }
 
     /**
-     * Update the database with the content of the path in the local storage.
+     * Read the files of the local storage and save its data in the database.
      * 
-     * Read the files in the configured path and if the file exist, check its
-     * creation date. If it has the same date as the register in the database do
-     * nothing, else update its data with the new file. If the file doesn't
-     * exist insert new record in the table.
-     * 
+     * @param listener
+     *            Object to receive the progress of the operation
+     * @param handler
+     *            Handler to write messages to the UI in the main thread
      */
-    private static void updateFiles (IProgressListener listener)
+    private static void readFilesToDatabase (IProgressListener listener,
+                                             MessageHandler handler)
         throws ConfigurationException
     {
         File directory;
 
-        listener.setMessage ("Updating files");
+        listener.setMessage (ContextManager.getString (R.string.mfm_updatingFiles));
 
         directory = new File (SettingsManager.getMapFilesPath ());
         if (!directory.exists ()) {
-            throw new ConfigurationException ("Directory not found");
+            throw new ConfigurationException (ContextManager.getString (R.string.mfm_directoryNotFound,
+                                                                        directory.getAbsolutePath ()));
         }
         else if (!directory.canRead ()) {
-            throw new ConfigurationException ("Directory not readable");
+            throw new ConfigurationException (ContextManager.getString (R.string.mfm_directoryCantRead,
+                                                                        directory.getAbsolutePath ()));
         }
         else {
-            File[] dirContent;
-
-            dirContent = directory.listFiles ();
-
             listener.reset ();
-            listener.setMax (dirContent.length);
 
-            for (File f : dirContent) {
-                listener.increment ();
-                processFile (f);
-            }
+            processDirectory (listener,
+                              handler,
+                              directory);
         }
     }
 
     /**
-     * Delete the files of the database that doesn't exist in the local storage.
+     * Process the files and directories of the specified directory calling to
+     * {@link processFile} method.
      * 
-     * Read the list of files in the database table and remove those that
-     * doesn't exist in the local storage.
+     * @param listener
+     *            Listener to show the progress of the operation
+     * @param dir
+     *            Directory with the files and directories to process
      */
-    private static void cleanFiles ()
+    private static void processDirectory (IProgressListener listener,
+                                          MessageHandler handler,
+                                          File dir)
     {
-        ArrayList<MapFile> lstFiles;
+        File[] dirContent;
 
-        lstFiles = getAllMapFiles ();
-        for (MapFile f : lstFiles) {
-            File localFile;
+        dirContent = dir.listFiles ();
+        listener.setMax (dirContent.length);
 
-            localFile = new File (f.getFileName ());
-            if (!localFile.exists ()) {
-                deleteMapFile (f);
+        for (File f : dirContent) {
+            Log.v ("MapFilesManager",
+                   "File to process: " + f.getAbsolutePath ());
+
+            listener.increment ();
+
+            try {
+                if (f.isFile ()) {
+                    processFile (f);
+                }
+                else if (f.isDirectory () &&
+                         !(f.getName ().equals (".") || f.getName ().equals (".."))) {
+                    processDirectory (listener,
+                                      handler,
+                                      f);
+                }
+            }
+            catch (WhereIParkedException e) {
+                handler.postMessage (e.getMessage ());
             }
         }
     }
 
     /**
-     * Process map file comparing its content with the saved data in the
-     * database.
-     * 
-     * If the file exists in the database with the same date of the local
-     * storage, then do nothing. If the file doesn't exist in the database the
-     * method add it to the table with its data. If the file has different date
-     * in the disk and in the database then delete it from database and add it
-     * again to update its data.
+     * Process the content of a local file with mapsforge library and save its data in
+     * the database.
      * 
      * @param f
      *            File to process
      */
     private static void processFile (File f)
+        throws WhereIParkedException
     {
         MapFile dbFile;
+        MapFile sdFile;
+
         String path;
 
         path = f.getAbsolutePath ();
 
-        dbFile = MapFilesManager.getMapFile (path);
-        if (dbFile == null) {
-            insertMapFile (MapsForgeManager.getInstance ().getMapFile (path));
+        try {
+            dbFile = MapFilesManager.getMapFile (path);
+            sdFile = MapsForgeManager.getInstance ().getMapFile (path);
+            if (dbFile == null) {
+                insertMapFile (sdFile);
+            }
         }
-        else if (!dbFile.getCreationDate ().equals (new Date (f.lastModified ()))) {
-            deleteMapFile (dbFile);
-            insertMapFile (MapsForgeManager.getInstance ().getMapFile (path));
+        catch (Exception e) {
+            throw new WhereIParkedException (ContextManager.getString (R.string.mfm_errorProcessingFile,
+                                                                       path,
+                                                                       e.getMessage ()));
         }
     }
 
@@ -165,7 +184,7 @@ public class MapFilesManager
         try {
             db = new WhereIParkedDataHelper ().getReadableDatabase ();
 
-            c = db.query ("map_files",
+            c = db.query (MapFilesManager.CONST_MAP_FILES_TABLE_NAME,
                           null,
                           "file_name = ?",
                           new String[] { path },
@@ -204,7 +223,7 @@ public class MapFilesManager
         try {
             db = new WhereIParkedDataHelper ().getReadableDatabase ();
 
-            c = db.query ("map_files",
+            c = db.query (MapFilesManager.CONST_MAP_FILES_TABLE_NAME,
                           null,
                           null,
                           null,
@@ -243,8 +262,6 @@ public class MapFilesManager
             ContentValues values;
 
             values = new ContentValues ();
-            values.put ("id_map_file",
-                        f.getIdMapFile ());
             values.put ("file_name",
                         f.getFileName ());
             values.put ("creation_date",
@@ -260,7 +277,7 @@ public class MapFilesManager
             values.put ("start_zoom",
                         f.getStartZoom ());
 
-            db.insert ("map_files",
+            db.insert (MapFilesManager.CONST_MAP_FILES_TABLE_NAME,
                        null,
                        values);
 
@@ -281,16 +298,46 @@ public class MapFilesManager
      * @param m
      *            Map file data to be deleted
      */
-    public static void deleteMapFile (MapFile f)
+    public static void deleteDatabaseMapFile (MapFile f)
     {
         SQLiteDatabase db = null;
 
         try {
             db = new WhereIParkedDataHelper ().getWritableDatabase ();
 
-            db.delete ("map_files",
+            db.delete (MapFilesManager.CONST_MAP_FILES_TABLE_NAME,
                        "id_map_file = ?",
                        new String[] { Long.toString (f.getIdMapFile ()) });
+        }
+        finally {
+            if (db != null) {
+                db.close ();
+            }
+        }
+    }
+
+    /**
+     * Delete all the map files from the database
+     * 
+     * @param m
+     *            Map file data to be deleted
+     */
+    public static void deleteAllDatabaseMapFiles ()
+    {
+        SQLiteDatabase db = null;
+
+        try {
+            db = new WhereIParkedDataHelper ().getWritableDatabase ();
+
+            db.delete (MapFilesManager.CONST_MAP_FILES_TABLE_NAME,
+                       null,
+                       null);
+            
+            // Reset the sequence to stop growing
+            db.delete ("sqlite_sequence",
+                       "name = ?",
+                       new String[] { MapFilesManager.CONST_MAP_FILES_TABLE_NAME });
+            
         }
         finally {
             if (db != null) {
@@ -306,7 +353,7 @@ public class MapFilesManager
      */
     private static long getLastId ()
     {
-        return new WhereIParkedDataHelper ().getLastId ("map_files");
+        return new WhereIParkedDataHelper ().getLastId (MapFilesManager.CONST_MAP_FILES_TABLE_NAME);
     }
 
     /**

@@ -165,5 +165,28 @@ public class WhereIParkedDataHelper
             }
         }
     }
+    
+    /**
+     * Reset the identifier of a table to restart its count
+     * 
+     * @param table Name of the table which restart counter
+     */
+    public void resetId (String table) {
+        SQLiteDatabase db = null;
+
+        try {
+            db = new WhereIParkedDataHelper ().getWritableDatabase ();
+
+            db.delete ("sqlite_sequence",
+                       "name = ?",
+                       new String[] { table });
+        }
+        finally {
+            if (db != null) {
+                db.close ();
+            }
+        }
+        
+    }
 
 }

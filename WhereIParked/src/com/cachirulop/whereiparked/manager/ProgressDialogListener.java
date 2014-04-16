@@ -47,4 +47,10 @@ public class ProgressDialogListener
     {
         _dialog.setProgress (0);
     }
+
+    @Override
+    public void dismiss ()
+    {
+        _dialog.dismiss ();
+    }
 }

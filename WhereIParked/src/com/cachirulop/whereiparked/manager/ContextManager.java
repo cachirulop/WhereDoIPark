@@ -27,4 +27,11 @@ public class ContextManager
         _context = ctx;
     }
 
+    public static String getString (int resId) {
+        return _context.getString (resId);
+    }
+    
+    public static String getString (int resId, Object... formatArgs) {
+        return _context.getString (resId, formatArgs);
+    }
 }
