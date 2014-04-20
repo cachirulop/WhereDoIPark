@@ -21,7 +21,8 @@ import com.cachirulop.whereiparked.common.ErrorDialogFragment;
 import com.cachirulop.whereiparked.manager.ContextManager;
 import com.cachirulop.whereiparked.manager.MapFilesManager;
 import com.cachirulop.whereiparked.manager.ProgressDialogListener;
-import com.cachirulop.whereiparked.providers.MapForgeTileProvider;
+import com.cachirulop.whereiparked.providers.MapsForgeTileProvider;
+import com.cachirulop.whereiparked.providers.TestMapForgeTileProvider;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +46,7 @@ public class MainActivity
         ContextManager.initContext (this);
 
         setContentView (R.layout.activity_main);
+        updateMapDatabase ();
 
         initMap ();
     }
@@ -104,7 +106,8 @@ public class MainActivity
 
                 // TODO: Only when not connection available
                 map.setMapType (GoogleMap.MAP_TYPE_NONE);
-                map.addTileOverlay (new TileOverlayOptions ().tileProvider (new MapForgeTileProvider ()));
+                map.addTileOverlay (new TileOverlayOptions ().tileProvider (new MapsForgeTileProvider ()));
+                //map.addTileOverlay (new TileOverlayOptions ().tileProvider (new TestMapForgeTileProvider ()));
             }
         }
     }
@@ -166,7 +169,6 @@ public class MainActivity
     public void setMyLocation (View v)
     {
         moveToCurrentLocation ();
-        launchBarDialog (v);
     }
 
     private boolean servicesConnected ()
@@ -207,7 +209,7 @@ public class MainActivity
         }
     }
 
-    public void launchBarDialog (View view)
+    public void updateMapDatabase ()
     {
         final ProgressDialog barProgressDialog;
         final Handler updateBarHandler;

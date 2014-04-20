@@ -6,23 +6,23 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Handler;
 import android.util.Log;
 
 import com.cachirulop.whereiparked.R;
-import com.cachirulop.whereiparked.common.Message;
 import com.cachirulop.whereiparked.common.MessageHandler;
 import com.cachirulop.whereiparked.common.exception.ConfigurationException;
 import com.cachirulop.whereiparked.common.exception.WhereIParkedException;
 import com.cachirulop.whereiparked.data.WhereIParkedDataHelper;
 import com.cachirulop.whereiparked.entity.MapFile;
+import com.cachirulop.whereiparked.entity.MapSubfile;
 
 public class MapFilesManager
 {
     private static final String CONST_MAP_FILES_TABLE_NAME = "map_files";
-    
+
     /**
      * Update the map database.
      * 
@@ -140,8 +140,8 @@ public class MapFilesManager
     }
 
     /**
-     * Process the content of a local file with mapsforge library and save its data in
-     * the database.
+     * Process the content of a local file with mapsforge library and save its
+     * data in the database.
      * 
      * @param f
      *            File to process
@@ -158,7 +158,7 @@ public class MapFilesManager
 
         try {
             dbFile = MapFilesManager.getMapFile (path);
-            sdFile = MapsForgeManager.getInstance ().getMapFile (path);
+            sdFile = MapsForgeManager.getMapFile (path);
             if (dbFile == null) {
                 insertMapFile (sdFile);
             }
@@ -198,6 +198,50 @@ public class MapFilesManager
             else {
                 return null;
             }
+        }
+        finally {
+            if (c != null) {
+                c.close ();
+            }
+
+            if (db != null) {
+                db.close ();
+            }
+        }
+    }
+
+    /**
+     * Returns a list of object of the MapFile class that has any subfile with
+     * data for the x, y and zoom values.
+     * 
+     * @param x
+     *            X coordinate of the tile to find the map file
+     * @param y
+     *            Y coordinate of the tile to find the map file
+     * @param zoom
+     *            Zoom level of the tile to find the map file
+     * @return Lis of map files with data in the specified coordinates
+     */
+    public static ArrayList<MapFile> getMapFilesFromTileCoords (int x,
+                                                                int y,
+                                                                int zoom)
+    {
+        Cursor c = null;
+        SQLiteDatabase db = null;
+        Context ctx;
+
+        try {
+            ctx = ContextManager.getContext ();
+            db = new WhereIParkedDataHelper ().getReadableDatabase ();
+
+            c = db.rawQuery (ctx.getString (R.string.SQL_map_files_find_from_tile_coords),
+                             new String[] { Integer.toString (x),
+                                     Integer.toString (x),
+                                     Integer.toString (y),
+                                     Integer.toString (y),
+                                     Integer.toString (zoom) });
+
+            return createMapFileList (c);
         }
         finally {
             if (c != null) {
@@ -252,7 +296,7 @@ public class MapFilesManager
      * @return The object received as parameter with the field MapFileId filled
      *         with the database identifier
      */
-    private static MapFile insertMapFile (MapFile f)
+    public static MapFile insertMapFile (MapFile f)
     {
         SQLiteDatabase db = null;
 
@@ -266,22 +310,19 @@ public class MapFilesManager
                         f.getFileName ());
             values.put ("creation_date",
                         f.getCreationDate ().getTime ());
-            values.put ("bounds_north",
-                        f.getBoundsNorth ());
-            values.put ("bounds_south",
-                        f.getBoundsSouth ());
-            values.put ("bounds_east",
-                        f.getBoundsEast ());
-            values.put ("bounds_west",
-                        f.getBoundsWest ());
-            values.put ("start_zoom",
-                        f.getStartZoom ());
 
             db.insert (MapFilesManager.CONST_MAP_FILES_TABLE_NAME,
                        null,
                        values);
 
             f.setIdMapFile (getLastId ());
+
+            for (MapSubfile sf : f.getSubFiles ()) {
+                sf.setIdMapFile (f.getIdMapFile ());
+
+                MapSubfilesManager.insertMapSubfile (db,
+                                                     sf);
+            }
 
             return f;
         }
@@ -304,6 +345,11 @@ public class MapFilesManager
 
         try {
             db = new WhereIParkedDataHelper ().getWritableDatabase ();
+
+            for (MapSubfile sf : f.getSubFiles ()) {
+                MapSubfilesManager.deleteMapSubfile (db,
+                                                     sf);
+            }
 
             db.delete (MapFilesManager.CONST_MAP_FILES_TABLE_NAME,
                        "id_map_file = ?",
@@ -329,15 +375,17 @@ public class MapFilesManager
         try {
             db = new WhereIParkedDataHelper ().getWritableDatabase ();
 
+            MapSubfilesManager.deleteAllMapSubfiles (db);
+
             db.delete (MapFilesManager.CONST_MAP_FILES_TABLE_NAME,
                        null,
                        null);
-            
+
             // Reset the sequence to stop growing
             db.delete ("sqlite_sequence",
                        "name = ?",
                        new String[] { MapFilesManager.CONST_MAP_FILES_TABLE_NAME });
-            
+
         }
         finally {
             if (db != null) {
@@ -386,7 +434,7 @@ public class MapFilesManager
      * filled in the cursor.
      * 
      * @param c
-     *            Data of the map file readed from the database
+     *            Data of the map file read from the database
      * @return New MapFile object with the database data.
      */
     private static MapFile createMapFile (Cursor c)
@@ -397,11 +445,8 @@ public class MapFilesManager
         result.setIdMapFile (c.getLong (c.getColumnIndex ("id_map_file")));
         result.setFileName (c.getString (c.getColumnIndex ("file_name")));
         result.setCreationDate (new Date (c.getLong (c.getColumnIndex ("creation_date"))));
-        result.setBoundsEast (c.getInt (c.getColumnIndex ("bounds_east")));
-        result.setBoundsWest (c.getInt (c.getColumnIndex ("bounds_west")));
-        result.setBoundsNorth (c.getInt (c.getColumnIndex ("bounds_north")));
-        result.setBoundsSouth (c.getInt (c.getColumnIndex ("bounds_south")));
-        result.setStartZoom (c.getInt (c.getColumnIndex ("start_zoom")));
+
+        result.setSubFiles (MapSubfilesManager.getMapSubfilesFromFile (result.getIdMapFile ()));
 
         return result;
     }

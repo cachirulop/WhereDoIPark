@@ -34,7 +34,7 @@ public class WhereIParkedDataHelper
     private static final String DATABASE_NAME    = "whereiparked.db";
 
     /** Current version */
-    private static final int    DATABASE_VERSION = 1;
+    private static final int    DATABASE_VERSION = 4;
 
     /** Context where the object is created */
     private final Context       _ctx;
@@ -92,6 +92,7 @@ public class WhereIParkedDataHelper
         String[] sql = _ctx.getString (R.string.SQL_on_upgrade).split (";");
 
         db.beginTransaction ();
+        
         try {
             execMultipleSQL (db,
                              sql);
@@ -106,7 +107,7 @@ public class WhereIParkedDataHelper
             db.endTransaction ();
         }
 
-        /* onCreate(db); */
+        onCreate(db); 
     }
 
     /**

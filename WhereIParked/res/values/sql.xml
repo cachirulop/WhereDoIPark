@@ -12,23 +12,37 @@
 <resources>
 
     <!-- Creates the moneybox database. Only the movements table is needed -->
-    <string name="SQL_on_create" translatable="false">
-        CREATE TABLE map_files (id_map_file INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    <string name="SQL_on_create" translatable="false">        CREATE TABLE map_files (id_map_file INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         						file_name TEXT NOT NULL, 
-        						creation_date TIMESTAMP NOT NULL,
-        						bounds_east INTEGER,
-        						bounds_west INTEGER,
-        						bounds_north INTEGER,
-        						bounds_south INTEGER,
-        						start_zoom INTEGER);
+        						creation_date TIMESTAMP NOT NULL);
         
-    </string>
-    
+        CREATE TABLE map_subfiles (id_map_subfile INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        						   id_map_file INTEGER, 
+        						   bounds_tile_left INTEGER, 
+        						   bounds_tile_right INTEGER, 
+        						   bounds_tile_top INTEGER, 
+        						   bounds_tile_bottom INTEGER,
+        						   zoom_level INTEGER,
+        						   FOREIGN KEY(id_map_file) REFERENCES ma_files(id_map_file));</string>
+
     <!-- Drop the movements table. -->
     <string name="SQL_on_upgrade" translatable="false">
-        <![CDATA[
-		]]>
+	<![CDATA[
+        DROP TABLE map_files;
+	]]>
     </string>
-    
-       
+    <string name="SQL_map_files_find_from_tile_coords">
+	<![CDATA[
+		SELECT * 
+		FROM map_files
+		WHERE id_map_file IN 
+		(SELECT id_map_file
+		 FROM map_subfiles
+		 WHERE (? >= bounds_tile_left AND ? <= bounds_tile_right) AND
+		       (? >= bounds_tile_top AND ? <= bounds_tile_bottom) AND
+		       zoom_level = ?
+		)        
+    ]]>
+    </string>
+
 </resources>

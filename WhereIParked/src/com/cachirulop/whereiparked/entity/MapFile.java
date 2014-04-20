@@ -1,6 +1,7 @@
 
 package com.cachirulop.whereiparked.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MapFile
@@ -8,11 +9,13 @@ public class MapFile
     private long   _idMapFile;
     private String _fileName;
     private Date   _creationDate;
-    private int    _boundsEast;
-    private int    _boundsWest;
-    private int    _boundsNorth;
-    private int    _boundsSouth;
-    private int    _startZoom;
+    
+    private ArrayList<MapSubfile> _subFiles;
+    
+    public MapFile()
+    {
+        _subFiles = new ArrayList<MapSubfile>();
+    }
 
     public long getIdMapFile ()
     {
@@ -43,55 +46,14 @@ public class MapFile
     {
         this._creationDate = creationDate;
     }
-
-    public int getBoundsEast ()
+    
+    public ArrayList<MapSubfile> getSubFiles ()
     {
-        return _boundsEast;
+        return _subFiles;
     }
-
-    public void setBoundsEast (int boundsEast)
+    
+    public void setSubFiles (ArrayList<MapSubfile> value)
     {
-        this._boundsEast = boundsEast;
+        _subFiles = value;
     }
-
-    public int getBoundsWest ()
-    {
-        return _boundsWest;
-    }
-
-    public void setBoundsWest (int boundsWest)
-    {
-        this._boundsWest = boundsWest;
-    }
-
-    public int getBoundsNorth ()
-    {
-        return _boundsNorth;
-    }
-
-    public void setBoundsNorth (int boundsNorth)
-    {
-        this._boundsNorth = boundsNorth;
-    }
-
-    public int getBoundsSouth ()
-    {
-        return _boundsSouth;
-    }
-
-    public void setBoundsSouth (int boundsSouth)
-    {
-        this._boundsSouth = boundsSouth;
-    }
-
-    public int getStartZoom ()
-    {
-        return _startZoom;
-    }
-
-    public void setStartZoom (int startZoom)
-    {
-        this._startZoom = startZoom;
-    }
-
 }

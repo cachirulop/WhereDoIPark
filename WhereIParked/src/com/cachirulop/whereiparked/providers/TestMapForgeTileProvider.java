@@ -4,8 +4,11 @@ package com.cachirulop.whereiparked.providers;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
 
 import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.mapgenerator.JobParameters;
@@ -24,7 +27,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 
-public class MapForgeTileProvider
+public class TestMapForgeTileProvider
         implements TileProvider
 {
     private DatabaseRenderer _mapGenerator;
@@ -34,7 +37,7 @@ public class MapForgeTileProvider
 
     private static final int BUFFER_SIZE = 16 * 1024;
 
-    public MapForgeTileProvider ()
+    public TestMapForgeTileProvider ()
     {
         _mapGenerator = new DatabaseRenderer ();
         _mapDatabase = new MapDatabase ();
@@ -60,6 +63,8 @@ public class MapForgeTileProvider
 
         // TODO: load the appropriate map file
         fileOpenResult = _mapDatabase.openFile (new File ("/storage/emulated/legacy/maps/spain.map"));
+        // fileOpenResult = _mapDatabase.openFile (new File ("/storage/emulated/legacy/maps/france/rhone-alpes.map"));
+        //fileOpenResult = _mapDatabase.openFile (new File ("/storage/emulated/legacy/maps/norway.map"));
         if (fileOpenResult.isSuccess ()) {
             mfTile = new org.mapsforge.core.Tile (x,
                                                   y,
@@ -95,38 +100,38 @@ public class MapForgeTileProvider
             oob = (x < west) || (x > east) ||
                   (y < north) || (y > south);
 
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map: " + _mapDatabase.getMapFileInfo ().projectionName);
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map: " + _mapDatabase.getMapFileInfo ().startZoomLevel);
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map: " +
                            _mapDatabase.getMapFileInfo ().startPosition.getLatitude ());
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map: " +
                            _mapDatabase.getMapFileInfo ().startPosition.getLongitude ());
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map: " +
                            _mapDatabase.getMapFileInfo ().boundingBox.getMinLatitude ());
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map: " + startX);
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map: " + startY);
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map: " +
                            _mapDatabase.getMapFileInfo ().boundingBox.getMaxLongitude ());
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map x: " + x);
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map y: " + y);
-            Log.v ("MapForgeTileProvider",
+            Log.v ("MapsForgeTileProvider",
                    "Map zoom: " + zoom);
-            Log.v("MapForgeTileProvider", "Map bounds east: " + east);
-            Log.v("MapForgeTileProvider", "Map bounds north: " + north);
-            Log.v("MapForgeTileProvider", "Map bounds west: " + west);
-            Log.v("MapForgeTileProvider", "Map bounds south: " + south);
-            Log.v("MapForgeTileProvider", "Map oob: " + oob);
-            Log.v ("MapForgeTileProvider",
+            Log.v("MapsForgeTileProvider", "Map bounds east: " + east);
+            Log.v("MapsForgeTileProvider", "Map bounds north: " + north);
+            Log.v("MapsForgeTileProvider", "Map bounds west: " + west);
+            Log.v("MapsForgeTileProvider", "Map bounds south: " + south);
+            Log.v("MapsForgeTileProvider", "Map oob: " + oob);
+            Log.v ("MapsForgeTileProvider",
                    "***********************************************");
 
             tileBitmap = Bitmap.createBitmap (org.mapsforge.core.Tile.TILE_SIZE,
@@ -138,11 +143,23 @@ public class MapForgeTileProvider
                 ByteArrayOutputStream buffer = null;
 
                 try {
-
                     buffer = new ByteArrayOutputStream ();
                     tileBitmap.compress (Bitmap.CompressFormat.PNG,
                                          90,
                                          buffer);
+                    
+                    
+                    /**********************************************/
+                    /*
+                    String fileName;
+                    fileName = String.format ("/storage/emulated/legacy/maps/%s_%s_%s.png", 
+                                              new Date().getTime (),
+                                              x, 
+                                              y);
+                    OutputStream outputStream = new FileOutputStream (fileName); 
+                    buffer.writeTo (outputStream);
+                    */
+                    /**********************************************/
 
                     return new Tile (tileBitmap.getWidth (),
                                      tileBitmap.getHeight (),
@@ -150,6 +167,7 @@ public class MapForgeTileProvider
                 }
                 catch (Exception e) {
                     // do nothing
+                    Log.v ("MapsForgeTileProvider", e.getMessage ());
                 }
                 finally {
                     if (buffer != null) {
