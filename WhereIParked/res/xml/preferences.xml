@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory
-        android:key="pref_AutoSaveCategory"
+        android:key="pref_autoSaveCategory"
         android:title="@string/pref_autosaveCategoryTitle" >
         <CheckBoxPreference
             android:defaultValue="false"
@@ -18,13 +18,15 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="pref_mapFilesPath"
-        android:title="@string/pref_mapFilesPathCategoryTitle" >
+        android:key="pref_mapCategory"
+        android:title="@string/pref_mapCategoryTitle" >
+        <ListPreference 
+            android:key="pref_mapMode"/>
+        
 		<EditTextPreference
             android:defaultValue="/sdcard/maps"
             android:key="pref_mapFilesPath"
             android:summary="@string/pref_mapFilesPathSummary"
             android:title="@string/pref_mapFilesPathTitle" />
     </PreferenceCategory>
-    
 </PreferenceScreen>

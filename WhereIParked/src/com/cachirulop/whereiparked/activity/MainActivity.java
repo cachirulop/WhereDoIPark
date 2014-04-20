@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +23,6 @@ import com.cachirulop.whereiparked.manager.ContextManager;
 import com.cachirulop.whereiparked.manager.MapFilesManager;
 import com.cachirulop.whereiparked.manager.ProgressDialogListener;
 import com.cachirulop.whereiparked.providers.MapsForgeTileProvider;
-import com.cachirulop.whereiparked.providers.TestMapForgeTileProvider;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,10 +45,18 @@ public class MainActivity
 
         ContextManager.initContext (this);
 
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         setContentView (R.layout.activity_main);
-        updateMapDatabase ();
 
         initMap ();
+    }
+
+    @Override
+    protected void onStart ()
+    {
+        updateMapDatabase ();
+
+        super.onStart ();
     }
 
     @Override
