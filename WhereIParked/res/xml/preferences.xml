@@ -2,7 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory
-        android:key="pref_AutoSaveCategory"
         android:title="@string/pref_autosaveCategoryTitle" >
         <CheckBoxPreference
             android:defaultValue="false"
@@ -11,20 +10,26 @@
             android:title="@string/pref_autoSavePositionTitle" />
 
         <com.cachirulop.whereiparked.preferences.BluetoothDevicePreference
+            android:dependency="pref_autoSavePosition"
             android:dialogTitle="@string/pref_bluetoothDeviceSummary"
             android:key="pref_bluetoothDeviceList"
-            android:title="@string/pref_bluetoothDeviceTitle"
-            android:dependency="pref_autoSavePosition"/>
+            android:title="@string/pref_bluetoothDeviceTitle" />
     </PreferenceCategory>
-
     <PreferenceCategory
-        android:key="pref_mapFilesPath"
-        android:title="@string/pref_mapFilesPathCategoryTitle" >
-		<EditTextPreference
+        android:title="@string/pref_mapModeCategoryTitle" >
+        <ListPreference
+            android:entries="@array/pref_mapModeText"
+            android:entryValues="@array/pref_mapModeValue"
+            android:key="pref_mapMode"
+            android:title="@string/pref_mapModeTitle"
+            android:summary="@string/pref_mapModeSummary"
+            android:defaultValue="0" />
+
+        <EditTextPreference
             android:defaultValue="/sdcard/maps"
             android:key="pref_mapFilesPath"
             android:summary="@string/pref_mapFilesPathSummary"
             android:title="@string/pref_mapFilesPathTitle" />
     </PreferenceCategory>
-    
+
 </PreferenceScreen>

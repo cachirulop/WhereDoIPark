@@ -11,11 +11,17 @@
     <string name="pref_bluetoothDeviceTitle">Bluetooth devices</string>    
     <string name="pref_bluetoothDeviceSummary">Bluetooth paired devices</string>
     
-    <string name="pref_mapFilesPathCategoryTitle">Offline maps</string>
+    <string name="pref_mapModeCategoryTitle">Maps</string>
+    <string name="pref_mapModeTitle">Map mode</string>
+    <string name="pref_mapModeSummary">Select the source of the maps: online (google), offline (sdcard) or auto</string>
+    <string-array name="pref_mapModeText">
+        <item>Auto</item>
+        <item>Online</item>
+        <item>Offline</item>
+    </string-array>
     <string name="pref_mapFilesPathTitle">Map files directory</string>    
     <string name="pref_mapFilesPathSummary">Path to the directory of the map files</string>
-    
-    
+        
     <string name="pref_bluetoothNotFound">Bluetooth adapter not found</string>
     
     <!--  MapFilesManager -->

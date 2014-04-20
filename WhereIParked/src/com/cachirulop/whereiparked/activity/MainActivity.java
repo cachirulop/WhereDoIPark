@@ -5,9 +5,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,12 +20,14 @@ import android.view.View;
 
 import com.cachirulop.whereiparked.R;
 import com.cachirulop.whereiparked.broadcast.BluetoothBroadcastReceiver;
+import com.cachirulop.whereiparked.broadcast.ConnectivityBroadcastReceiver;
 import com.cachirulop.whereiparked.common.ErrorDialogFragment;
 import com.cachirulop.whereiparked.manager.ContextManager;
 import com.cachirulop.whereiparked.manager.MapFilesManager;
 import com.cachirulop.whereiparked.manager.ProgressDialogListener;
+import com.cachirulop.whereiparked.manager.SettingsManager;
+import com.cachirulop.whereiparked.manager.SettingsManager.MapModeType;
 import com.cachirulop.whereiparked.providers.MapsForgeTileProvider;
-import com.cachirulop.whereiparked.providers.TestMapForgeTileProvider;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,6 +40,7 @@ public class MainActivity
         extends Activity
 {
     BluetoothBroadcastReceiver _bluetoothReceiver;
+    ConnectivityBroadcastReceiver _connectivityReceiver;
 
     private final static int   CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -55,7 +61,11 @@ public class MainActivity
     protected void onPause ()
     {
         unregisterReceiver (_bluetoothReceiver);
-
+        
+        if (SettingsManager.getMapMode() == MapModeType.AUTO) {
+        	unregisterReceiver (_connectivityReceiver);
+        }
+        
         super.onPause ();
     }
 
@@ -63,10 +73,15 @@ public class MainActivity
     protected void onResume ()
     {
         _bluetoothReceiver = new BluetoothBroadcastReceiver ();
-
         registerReceiver (_bluetoothReceiver,
                           new IntentFilter (BluetoothDevice.ACTION_ACL_DISCONNECTED));
 
+        if (SettingsManager.getMapMode() == MapModeType.AUTO) {
+	        _connectivityReceiver = new ConnectivityBroadcastReceiver(this);
+	        registerReceiver (_connectivityReceiver,
+	                new IntentFilter (ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        
         super.onResume ();
     }
 
@@ -103,13 +118,79 @@ public class MainActivity
                 map.getUiSettings ().setMyLocationButtonEnabled (false);
 
                 // moveToCurrentLocation ();
-
-                // TODO: Only when not connection available
-                map.setMapType (GoogleMap.MAP_TYPE_NONE);
-                map.addTileOverlay (new TileOverlayOptions ().tileProvider (new MapsForgeTileProvider ()));
-                //map.addTileOverlay (new TileOverlayOptions ().tileProvider (new TestMapForgeTileProvider ()));
+                updateMapMode ();
             }
         }
+    }
+
+    /**
+     * Updates the map mode to online or offline mode
+     */
+    public void updateMapMode () 
+    {
+        switch (SettingsManager.getMapMode()) {
+        case AUTO:
+        	if (isConnected ()) {
+        		setOnlineMap ();
+        	}
+        	else {
+        		setOfflineMap ();
+        	}
+        	break;
+        	
+        case ONLINE:
+        	setOnlineMap ();
+        	break;
+        	
+        case OFFLINE:
+        	setOfflineMap ();
+        	break;
+        }
+    }
+    
+    /**
+     * Test if there is a valid internet connection
+     * @return True if there is a connection, false in other case
+     */
+    private boolean isConnected ()
+    {
+    	ConnectivityManager cm;
+    	NetworkInfo activeNetwork;
+    	
+    	cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+    	activeNetwork = cm.getActiveNetworkInfo();
+   	 
+    	return activeNetwork != null &&
+    	       activeNetwork.isConnectedOrConnecting();
+    }
+    
+    /**
+     * Configure the map view to work with online maps (google).
+     */
+    private void setOnlineMap ()
+    {
+        GoogleMap map;
+
+        map = getMap ();
+        map.clear ();
+    	
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+    }
+    
+    /**
+     * Configure the map view to work with offline map, implemented in the
+     * MapsForgeTileProvider class 
+     */
+    private void setOfflineMap () 
+    {
+        GoogleMap map;
+
+        map = getMap ();
+        map.clear ();
+
+        map.setMapType (GoogleMap.MAP_TYPE_NONE);
+        map.addTileOverlay (new TileOverlayOptions ().tileProvider (new MapsForgeTileProvider ()));
+        //map.addTileOverlay (new TileOverlayOptions ().tileProvider (new TestMapForgeTileProvider ()));
     }
 
     @Override

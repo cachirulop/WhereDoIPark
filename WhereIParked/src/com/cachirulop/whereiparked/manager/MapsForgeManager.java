@@ -75,7 +75,7 @@ public class MapsForgeManager
             MapFileHeader header;
 
             header = mapDB.getMapFileHeader ();
-            for (byte i = header.getZoomLevelMinimum (); i < header.getZoomLevelMaximum (); i++) {
+            for (byte i = header.getZoomLevelMinimum (); i <= header.getZoomLevelMaximum (); i++) {
                 MapSubfile current;
                 SubFileParameter srcParam;
 
