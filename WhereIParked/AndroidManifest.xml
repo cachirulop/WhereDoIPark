@@ -6,9 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="15"
-        android:targetSdkVersion="19" />
-    
-    
+        android:targetSdkVersion="19" />    
 
     <!-- List of bluetooth devices to autosave position -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -57,5 +55,4 @@
                 android:value="com.cachirulop.whereiparked.MainActivity" />
         </activity>
     </application>
-
 </manifest>
