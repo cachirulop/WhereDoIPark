@@ -43,6 +43,8 @@ public class MainActivity
     ConnectivityBroadcastReceiver _connectivityReceiver;
 
     private final static int   CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    
+    private final static int ACTIVITY_RESULT_SETTINGS = 0;
 
     @Override
     protected void onCreate (Bundle savedInstanceState)
@@ -103,6 +105,12 @@ public class MainActivity
                         initMap ();
                         break;
                 }
+                
+                break;
+                
+            case ACTIVITY_RESULT_SETTINGS:
+            	updateMapMode();
+            	break;
         }
     }
 
@@ -214,7 +222,8 @@ public class MainActivity
                 return super.onOptionsItemSelected (item);
         }
     }
-
+    
+    
     private void moveToCurrentLocation ()
     {
         Location currentLocation;
@@ -229,7 +238,7 @@ public class MainActivity
                                             currentLocation.getLongitude ());
 
                 map.animateCamera (CameraUpdateFactory.newLatLngZoom (currentLatLng,
-                                                                      13));
+                                                                      18));
                 // map.animateCamera(CameraUpdateFactory.zoomIn());
 
             }
@@ -243,8 +252,9 @@ public class MainActivity
 
     private void showPreferences ()
     {
-        startActivity (new Intent (this,
-                                   SettingsActivity.class));
+        startActivityForResult(new Intent (this,
+                                   SettingsActivity.class), 
+                               ACTIVITY_RESULT_SETTINGS);
     }
 
     public void setMyLocation (View v)

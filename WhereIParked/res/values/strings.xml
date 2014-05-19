@@ -16,8 +16,8 @@
     <string name="pref_mapModeSummary">Select the source of the maps: online (google), offline (sdcard) or auto</string>
     <string-array name="pref_mapModeText">
         <item>Auto</item>
-        <item>Online</item>
-        <item>Offline</item>
+        <item>Online (google)</item>
+        <item>Offline (sdcard)</item>
     </string-array>
 
     <string name="pref_mapFilesPathTitle">Map files directory</string>    

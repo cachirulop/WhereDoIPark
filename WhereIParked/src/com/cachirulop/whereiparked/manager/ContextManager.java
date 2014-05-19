@@ -34,4 +34,9 @@ public class ContextManager
     public static String getString (int resId, Object... formatArgs) {
         return _context.getString (resId, formatArgs);
     }
+    
+    public static String getStringFromArray (int resId, int index)
+    {
+    	return _context.getResources().getStringArray(resId)[index];
+    }
 }
