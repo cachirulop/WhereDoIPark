@@ -39,9 +39,9 @@ public class BluetoothDevicePreference
                 if (entries [i].toString ().equals ("")) {
                     entries [i] = dev.getAddress ();
                 }
-                
+
                 entryValues [i] = dev.getAddress ();
-                
+
                 i++;
             }
         }

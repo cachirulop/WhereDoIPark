@@ -23,8 +23,8 @@ public class BluetoothBroadcastReceiver
         device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
 
         Message.showMessage ("Bluetooth broadcast receive: action: " + action +
-                                     ", device: " + device.getAddress () +
-                                     " - " + device.getName ());
+                             ", device: " + device.getAddress () + " - " +
+                             device.getName ());
 
         if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals (action)) {
             Message.showMessage ("Device disconnected");

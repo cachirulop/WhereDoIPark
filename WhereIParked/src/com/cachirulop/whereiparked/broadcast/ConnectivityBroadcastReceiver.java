@@ -1,3 +1,4 @@
+
 package com.cachirulop.whereiparked.broadcast;
 
 import android.content.BroadcastReceiver;
@@ -7,15 +8,15 @@ import android.content.Intent;
 import com.cachirulop.whereiparked.activity.MainActivity;
 import com.cachirulop.whereiparked.common.Message;
 
-public class ConnectivityBroadcastReceiver         
-	extends BroadcastReceiver
+public class ConnectivityBroadcastReceiver
+        extends BroadcastReceiver
 {
-	MainActivity _parent;
-	
-	public ConnectivityBroadcastReceiver (MainActivity parent) 
-	{
-		_parent = parent;
-	}
+    MainActivity _parent;
+
+    public ConnectivityBroadcastReceiver (MainActivity parent)
+    {
+        _parent = parent;
+    }
 
     @Override
     public void onReceive (Context context,
@@ -26,7 +27,7 @@ public class ConnectivityBroadcastReceiver
         action = intent.getAction ();
 
         Message.showMessage ("Connection state change: action: " + action);
-        
-        _parent.updateMapMode();
+
+        _parent.updateMapMode ();
     }
 }

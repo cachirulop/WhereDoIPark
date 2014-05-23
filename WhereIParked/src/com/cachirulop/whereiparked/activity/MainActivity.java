@@ -12,7 +12,6 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,12 +38,12 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 public class MainActivity
         extends Activity
 {
-    BluetoothBroadcastReceiver _bluetoothReceiver;
+    BluetoothBroadcastReceiver    _bluetoothReceiver;
     ConnectivityBroadcastReceiver _connectivityReceiver;
 
-    private final static int   CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    
-    private final static int ACTIVITY_RESULT_SETTINGS = 0;
+    private final static int      CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+    private final static int      ACTIVITY_RESULT_SETTINGS              = 0;
 
     @Override
     protected void onCreate (Bundle savedInstanceState)
@@ -63,11 +62,11 @@ public class MainActivity
     protected void onPause ()
     {
         unregisterReceiver (_bluetoothReceiver);
-        
-        if (SettingsManager.getMapMode() == MapModeType.AUTO) {
-        	unregisterReceiver (_connectivityReceiver);
+
+        if (SettingsManager.getMapMode () == MapModeType.AUTO) {
+            unregisterReceiver (_connectivityReceiver);
         }
-        
+
         super.onPause ();
     }
 
@@ -78,12 +77,12 @@ public class MainActivity
         registerReceiver (_bluetoothReceiver,
                           new IntentFilter (BluetoothDevice.ACTION_ACL_DISCONNECTED));
 
-        if (SettingsManager.getMapMode() == MapModeType.AUTO) {
-	        _connectivityReceiver = new ConnectivityBroadcastReceiver(this);
-	        registerReceiver (_connectivityReceiver,
-	                new IntentFilter (ConnectivityManager.CONNECTIVITY_ACTION));
+        if (SettingsManager.getMapMode () == MapModeType.AUTO) {
+            _connectivityReceiver = new ConnectivityBroadcastReceiver (this);
+            registerReceiver (_connectivityReceiver,
+                              new IntentFilter (ConnectivityManager.CONNECTIVITY_ACTION));
         }
-        
+
         super.onResume ();
     }
 
@@ -105,12 +104,12 @@ public class MainActivity
                         initMap ();
                         break;
                 }
-                
+
                 break;
-                
+
             case ACTIVITY_RESULT_SETTINGS:
-            	updateMapMode();
-            	break;
+                updateMapMode ();
+                break;
         }
     }
 
@@ -134,44 +133,45 @@ public class MainActivity
     /**
      * Updates the map mode to online or offline mode
      */
-    public void updateMapMode () 
+    public void updateMapMode ()
     {
-        switch (SettingsManager.getMapMode()) {
-        case AUTO:
-        	if (isConnected ()) {
-        		setOnlineMap ();
-        	}
-        	else {
-        		setOfflineMap ();
-        	}
-        	break;
-        	
-        case ONLINE:
-        	setOnlineMap ();
-        	break;
-        	
-        case OFFLINE:
-        	setOfflineMap ();
-        	break;
+        switch (SettingsManager.getMapMode ()) {
+            case AUTO:
+                if (isConnected ()) {
+                    setOnlineMap ();
+                }
+                else {
+                    setOfflineMap ();
+                }
+                break;
+
+            case ONLINE:
+                setOnlineMap ();
+                break;
+
+            case OFFLINE:
+                setOfflineMap ();
+                break;
         }
     }
-    
+
     /**
      * Test if there is a valid internet connection
+     * 
      * @return True if there is a connection, false in other case
      */
     private boolean isConnected ()
     {
-    	ConnectivityManager cm;
-    	NetworkInfo activeNetwork;
-    	
-    	cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-    	activeNetwork = cm.getActiveNetworkInfo();
-   	 
-    	return activeNetwork != null &&
-    	       activeNetwork.isConnectedOrConnecting();
+        ConnectivityManager cm;
+        NetworkInfo activeNetwork;
+
+        cm = (ConnectivityManager) this.getSystemService (Context.CONNECTIVITY_SERVICE);
+        activeNetwork = cm.getActiveNetworkInfo ();
+
+        return activeNetwork != null &&
+               activeNetwork.isConnectedOrConnecting ();
     }
-    
+
     /**
      * Configure the map view to work with online maps (google).
      */
@@ -181,15 +181,15 @@ public class MainActivity
 
         map = getMap ();
         map.clear ();
-    	
-        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        map.setMapType (GoogleMap.MAP_TYPE_NORMAL);
     }
-    
+
     /**
      * Configure the map view to work with offline map, implemented in the
-     * MapsForgeTileProvider class 
+     * MapsForgeTileProvider class
      */
-    private void setOfflineMap () 
+    private void setOfflineMap ()
     {
         GoogleMap map;
 
@@ -198,7 +198,8 @@ public class MainActivity
 
         map.setMapType (GoogleMap.MAP_TYPE_NONE);
         map.addTileOverlay (new TileOverlayOptions ().tileProvider (new MapsForgeTileProvider ()));
-        //map.addTileOverlay (new TileOverlayOptions ().tileProvider (new TestMapForgeTileProvider ()));
+        // map.addTileOverlay (new TileOverlayOptions ().tileProvider (new
+        // TestMapForgeTileProvider ()));
     }
 
     @Override
@@ -222,8 +223,7 @@ public class MainActivity
                 return super.onOptionsItemSelected (item);
         }
     }
-    
-    
+
     private void moveToCurrentLocation ()
     {
         Location currentLocation;
@@ -252,9 +252,9 @@ public class MainActivity
 
     private void showPreferences ()
     {
-        startActivityForResult(new Intent (this,
-                                   SettingsActivity.class), 
-                               ACTIVITY_RESULT_SETTINGS);
+        startActivityForResult (new Intent (this,
+                                            SettingsActivity.class),
+                                ACTIVITY_RESULT_SETTINGS);
     }
 
     public void setMyLocation (View v)
@@ -303,51 +303,19 @@ public class MainActivity
     public void updateMapDatabase ()
     {
         final ProgressDialog barProgressDialog;
-        final Handler updateBarHandler;
         ProgressDialogListener listener;
 
-        updateBarHandler = new Handler ();
         barProgressDialog = new ProgressDialog (MainActivity.this);
 
         barProgressDialog.setTitle ("Downloading Image ...");
         barProgressDialog.setMessage ("Download in progress ...");
-        barProgressDialog.setProgressStyle (barProgressDialog.STYLE_HORIZONTAL);
+        barProgressDialog.setProgressStyle (ProgressDialog.STYLE_HORIZONTAL);
         barProgressDialog.setProgress (0);
         barProgressDialog.setMax (20);
         barProgressDialog.show ();
         barProgressDialog.setCancelable (false);
-        
+
         listener = new ProgressDialogListener (barProgressDialog);
         MapFilesManager.updateMapDatabase (listener);
-        
-/*
-        new Thread (new Runnable ()
-        {
-            @Override
-            public void run ()
-            {
-                try {
-                    // Here you should write your time consuming task...
-                    while (barProgressDialog.getProgress () <= barProgressDialog.getMax ()) {
-                        Thread.sleep (2000);
-
-                        updateBarHandler.post (new Runnable ()
-                        {
-                            public void run ()
-                            {
-                                barProgressDialog.incrementProgressBy (2);
-                            }
-                        });
-
-                        if (barProgressDialog.getProgress () == barProgressDialog.getMax ()) {
-                            barProgressDialog.dismiss ();
-                        }
-                    }
-                }
-                catch (Exception e) {
-                }
-            }
-        }).start ();
-*/
     }
 }

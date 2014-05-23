@@ -29,7 +29,8 @@ public class MapSubfilesManager
         try {
             db = new WhereIParkedDataHelper ().getWritableDatabase ();
 
-            return insertMapSubfile (db, f);
+            return insertMapSubfile (db,
+                                     f);
         }
         finally {
             if (db != null) {
@@ -37,7 +38,6 @@ public class MapSubfilesManager
             }
         }
     }
-
 
     /**
      * Insert new map subfile data into the table map_subfiles in the database
@@ -47,7 +47,8 @@ public class MapSubfilesManager
      * @return The object received as parameter with the field MapSubfileId
      *         filled with the database identifier
      */
-    public static MapSubfile insertMapSubfile (SQLiteDatabase db, MapSubfile f)
+    public static MapSubfile insertMapSubfile (SQLiteDatabase db,
+                                               MapSubfile f)
     {
         ContentValues values;
 
@@ -72,8 +73,8 @@ public class MapSubfilesManager
         f.setIdMapFile (getLastId ());
 
         return f;
-    }    
-    
+    }
+
     /**
      * Delete a map subfile data from the database
      * 
@@ -87,7 +88,8 @@ public class MapSubfilesManager
         try {
             db = new WhereIParkedDataHelper ().getWritableDatabase ();
 
-            deleteMapSubfile (db, f);
+            deleteMapSubfile (db,
+                              f);
         }
         finally {
             if (db != null) {
@@ -95,14 +97,15 @@ public class MapSubfilesManager
             }
         }
     }
-    
+
     /**
      * Delete a map subfile data from the database
      * 
      * @param m
      *            Map subfile data to be deleted
      */
-    public static void deleteMapSubfile (SQLiteDatabase db, MapSubfile f)
+    public static void deleteMapSubfile (SQLiteDatabase db,
+                                         MapSubfile f)
     {
         db.delete (MapSubfilesManager.CONST_MAP_SUBFILES_TABLE_NAME,
                    "id_map_subfile = ?",
@@ -122,7 +125,7 @@ public class MapSubfilesManager
         try {
             db = new WhereIParkedDataHelper ().getWritableDatabase ();
 
-            deleteAllMapSubfiles (db);            
+            deleteAllMapSubfiles (db);
         }
         finally {
             if (db != null) {
@@ -130,7 +133,7 @@ public class MapSubfilesManager
             }
         }
     }
-    
+
     /**
      * Delete all the map subfiles from the database
      * 
@@ -148,8 +151,8 @@ public class MapSubfilesManager
                    "name = ?",
                    new String[] { MapSubfilesManager.CONST_MAP_SUBFILES_TABLE_NAME });
     }
-    
-    public static ArrayList<MapSubfile> getMapSubfilesFromFile (long idFile) 
+
+    public static ArrayList<MapSubfile> getMapSubfilesFromFile (long idFile)
     {
         SQLiteDatabase db = null;
         Cursor c = null;

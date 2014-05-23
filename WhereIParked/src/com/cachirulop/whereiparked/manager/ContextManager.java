@@ -27,16 +27,21 @@ public class ContextManager
         _context = ctx;
     }
 
-    public static String getString (int resId) {
+    public static String getString (int resId)
+    {
         return _context.getString (resId);
     }
-    
-    public static String getString (int resId, Object... formatArgs) {
-        return _context.getString (resId, formatArgs);
-    }
-    
-    public static String getStringFromArray (int resId, int index)
+
+    public static String getString (int resId,
+                                    Object... formatArgs)
     {
-    	return _context.getResources().getStringArray(resId)[index];
+        return _context.getString (resId,
+                                   formatArgs);
+    }
+
+    public static String getStringFromArray (int resId,
+                                             int index)
+    {
+        return _context.getResources ().getStringArray (resId) [index];
     }
 }
