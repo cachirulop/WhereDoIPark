@@ -1,5 +1,5 @@
 
-package com.cachirulop.whereiparked.providers;
+package com.cachirulop.whereiparked.provider;
 
 import java.io.ByteArrayOutputStream;
 

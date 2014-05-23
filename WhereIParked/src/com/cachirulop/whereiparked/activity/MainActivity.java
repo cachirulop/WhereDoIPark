@@ -26,7 +26,7 @@ import com.cachirulop.whereiparked.manager.MapFilesManager;
 import com.cachirulop.whereiparked.manager.ProgressDialogListener;
 import com.cachirulop.whereiparked.manager.SettingsManager;
 import com.cachirulop.whereiparked.manager.SettingsManager.MapModeType;
-import com.cachirulop.whereiparked.providers.MapsForgeTileProvider;
+import com.cachirulop.whereiparked.provider.MapsForgeTileProvider;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
