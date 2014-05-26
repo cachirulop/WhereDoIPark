@@ -1,13 +1,14 @@
+
 package com.cachirulop.whereiparked.manager;
 
 import android.app.ProgressDialog;
 
 public class ProgressDialogListener
-    implements IProgressListener
+        implements IProgressListener
 {
     private ProgressDialog _dialog;
-    
-    public ProgressDialogListener (ProgressDialog dialog) 
+
+    public ProgressDialogListener (ProgressDialog dialog)
     {
         _dialog = dialog;
     }

@@ -92,7 +92,7 @@ public class WhereIParkedDataHelper
         String[] sql = _ctx.getString (R.string.SQL_on_upgrade).split (";");
 
         db.beginTransaction ();
-        
+
         try {
             execMultipleSQL (db,
                              sql);
@@ -107,7 +107,7 @@ public class WhereIParkedDataHelper
             db.endTransaction ();
         }
 
-        onCreate(db); 
+        onCreate (db);
     }
 
     /**
@@ -166,13 +166,15 @@ public class WhereIParkedDataHelper
             }
         }
     }
-    
+
     /**
      * Reset the identifier of a table to restart its count
      * 
-     * @param table Name of the table which restart counter
+     * @param table
+     *            Name of the table which restart counter
      */
-    public void resetId (String table) {
+    public void resetId (String table)
+    {
         SQLiteDatabase db = null;
 
         try {
@@ -187,7 +189,7 @@ public class WhereIParkedDataHelper
                 db.close ();
             }
         }
-        
+
     }
 
 }

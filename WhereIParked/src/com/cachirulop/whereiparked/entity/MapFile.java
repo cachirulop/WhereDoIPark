@@ -6,15 +6,15 @@ import java.util.Date;
 
 public class MapFile
 {
-    private long   _idMapFile;
-    private String _fileName;
-    private Date   _creationDate;
-    
+    private long                  _idMapFile;
+    private String                _fileName;
+    private Date                  _creationDate;
+
     private ArrayList<MapSubfile> _subFiles;
-    
-    public MapFile()
+
+    public MapFile ()
     {
-        _subFiles = new ArrayList<MapSubfile>();
+        _subFiles = new ArrayList<MapSubfile> ();
     }
 
     public long getIdMapFile ()
@@ -41,17 +41,17 @@ public class MapFile
     {
         return _creationDate;
     }
-    
+
     public void setCreationDate (Date creationDate)
     {
         this._creationDate = creationDate;
     }
-    
+
     public ArrayList<MapSubfile> getSubFiles ()
     {
         return _subFiles;
     }
-    
+
     public void setSubFiles (ArrayList<MapSubfile> value)
     {
         _subFiles = value;
