@@ -8,8 +8,10 @@ public class MessageHandler
 {
     public void postMessage (final String msg)
     {
-        post (new Runnable () {
-            public void run () {
+        post (new Runnable ()
+        {
+            public void run ()
+            {
                 Message.showMessage (msg);
             }
         });
