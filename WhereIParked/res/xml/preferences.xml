@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory
-        android:title="@string/pref_autosaveCategoryTitle" >
+    <PreferenceCategory android:title="@string/pref_autosaveCategoryTitle" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_autoSavePosition"
@@ -15,15 +14,14 @@
             android:key="pref_bluetoothDeviceList"
             android:title="@string/pref_bluetoothDeviceTitle" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/pref_mapModeCategoryTitle" >
+    <PreferenceCategory android:title="@string/pref_mapModeCategoryTitle" >
         <ListPreference
+            android:defaultValue="0"
             android:entries="@array/pref_mapModeText"
             android:entryValues="@array/pref_mapModeValue"
             android:key="pref_mapMode"
-            android:title="@string/pref_mapModeTitle"
             android:summary="@string/pref_mapModeSummary"
-            android:defaultValue="0" />
+            android:title="@string/pref_mapModeTitle" />
 
         <EditTextPreference
             android:defaultValue="/sdcard/maps"
@@ -31,4 +29,5 @@
             android:summary="@string/pref_mapFilesPathSummary"
             android:title="@string/pref_mapFilesPathTitle" />
     </PreferenceCategory>
+
 </PreferenceScreen>

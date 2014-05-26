@@ -8,27 +8,26 @@
     <string name="pref_autosaveCategoryTitle">Auto save</string>
     <string name="pref_autoSavePositionTitle">Auto save position</string>
     <string name="pref_autoSavePositionSummary">Autosave position when disconnect from a bluetooth device</string>
-    <string name="pref_bluetoothDeviceTitle">Bluetooth devices</string>    
+    <string name="pref_bluetoothDeviceTitle">Bluetooth devices</string>
     <string name="pref_bluetoothDeviceSummary">Bluetooth paired devices</string>
-    
     <string name="pref_mapModeCategoryTitle">Maps</string>
     <string name="pref_mapModeTitle">Map mode</string>
     <string name="pref_mapModeSummary">Select the source of the maps: online (google), offline (sdcard) or auto</string>
+
     <string-array name="pref_mapModeText">
         <item>Auto</item>
         <item>Online (google)</item>
         <item>Offline (sdcard)</item>
     </string-array>
 
-    <string name="pref_mapFilesPathTitle">Map files directory</string>    
+    <string name="pref_mapFilesPathTitle">Map files directory</string>
     <string name="pref_mapFilesPathSummary">Path to the directory of the map files</string>
-        
     <string name="pref_bluetoothNotFound">Bluetooth adapter not found</string>
-    
-    <!--  MapFilesManager -->
+
+    <!-- MapFilesManager -->
     <string name="mfm_updatingFiles">Updating files</string>
-    <string name="mfm_directoryNotFound" formatted="false" >Configured directory (%s) not found. Please check your configuration</string>
-    <string name="mfm_directoryCantRead" formatted="false" >Can\'t read the configured directory (%s). Please check the permissions</string>
-	<string name="mfm_errorProcessingFile" formatted="false" >Error processing file %s: %s</string>
-	
+    <string name="mfm_directoryNotFound" formatted="false">Configured directory (%s) not found. Please check your configuration</string>
+    <string name="mfm_directoryCantRead" formatted="false">Can\'t read the configured directory (%s). Please check the permissions</string>
+    <string name="mfm_errorProcessingFile" formatted="false">Error processing file %s: %s</string>
+
 </resources>
